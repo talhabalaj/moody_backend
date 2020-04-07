@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
 
-import { User } from "../../models/User";
+import { User, IUser } from "../../models/User";
 
 import "../../lib/db";
+import { ExpressRequest } from "../../enhancements/ExpressRequest";
 
-export const registerUser = async (req: Request, res: Response): Promise<Response<any>> => {
-    const { userName, email, password, phoneNumber, firstName, lastName } = req.body;
+export const registerUser = async (req: ExpressRequest, res: Response) => {
+
+    const { userName, email, password, phoneNumber, firstName, lastName }: IUser = req.body;
 
 
     if (await User.exists({ email })) {
