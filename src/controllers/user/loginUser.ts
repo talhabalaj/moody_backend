@@ -1,37 +1,34 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { compare } from 'bcrypt';
 
-import { AuthToken } from "../../models/AuthToken";
+import { AuthToken, IAuthToken } from "../../models/AuthToken";
 import { User } from "../../models/User";
 import { secret, sessionTime } from '../../config';
 import { ExpressRequest } from '../../enhancements/ExpressRequest';
+import { createError } from '../../lib/errors';
+import { createResponse } from '../../lib/response';
 
 
 export const loginUser = async (req: ExpressRequest, res: Response): Promise<Response<any>> => {
-
     const { userName, password } = req.body;
     const user = await User.findOne({ userName });
+
     if (user && await compare(password, user.password)) {
+
         const token = jwt.sign({ id: user._id }, secret, { expiresIn: sessionTime });
-        const authToken = new AuthToken({ userId: user._id, token, isValid: true });
+        const tokenInfo: IAuthToken = { userId: user._id, token, isValid: true };
+        const authToken = new AuthToken(tokenInfo);
+
         try {
             await authToken.save();
-            return res.status(202).json({
-                error: false,
-                token,
-            });
+            return createResponse(res, { status: 202, message: 'Successfully logged in.', data: { tokenInfo } });
         } catch (e) {
-            return res.status(500).json({
-                error: true,
-                message: e.message
-            });
+            return createError(res, { code: 5000, args: [e.message] });
         }
+
     } else {
-        return res.status(400).json({
-            error: true,
-            message: 'Email/password are incorrect.'
-        });
+        return createError(res, { code: 1004 });
     }
 
 }

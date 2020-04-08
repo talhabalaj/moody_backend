@@ -1,9 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import jwt, { JsonWebTokenError } from 'jsonwebtoken';
 import { secret } from '../config';
 import { User } from '../models/User';
 import { ExpressRequest } from '../enhancements/ExpressRequest';
-import { logoutUser } from '../controllers/user';
+import { createError } from '../lib/errors';
+
 
 interface JWTVerificationResponse {
     id: string,
@@ -11,7 +12,7 @@ interface JWTVerificationResponse {
     exp: number,
 }
 
-export const authProvider = async (req: ExpressRequest, res: Response, next: NextFunction) => {
+export const authProvider = async (req: ExpressRequest, res: Response, next: NextFunction): Promise<any> => {
     const token = req.headers['authorization']?.split(' ')[1];
 
     if (token) {
@@ -25,41 +26,31 @@ export const authProvider = async (req: ExpressRequest, res: Response, next: Nex
             if (e instanceof JsonWebTokenError) {
                 if (e.name === 'TokenExpiredError') {
                     // TODO: Refresh the token
-                    res.status(400).json({
-                        error: true,
-                        message: 'Token Expired'
-                    })
+                    return createError(res, { code: 1001 });
                 } else if (e.name === 'JsonWebTokenError') {
-                    res.status(400).json({
-                        error: true,
-                        message: 'Token Malformed'
-                    })
+                    return createError(res, { code: 1000 });
                 }
             } else {
-                console.error(e);
-                res.status(500).end();
+                return createError(res, { code: 5000, args: [e.message] });
             }
         }
-    } else {
-        next();
     }
+
+    next();
 }
 
 export const protectedRoute = async (req: ExpressRequest, res: Response, next: NextFunction) => {
     if (req.user) {
         next();
     } else {
-        res.status(403).json({
-            error: true,
-            message: 'Unauthorized!'
-        });
+        createError(res, { code: 1002 });
     }
 }
 
 export const loginRegisterLock = async (req: ExpressRequest, res: Response, next: NextFunction) => {
     if (req.user) {
-        res.redirect('/');
+        createError(res, { code: 1003 });
+    } else {
+        next();
     }
-
-    next();
 }

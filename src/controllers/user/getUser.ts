@@ -5,11 +5,6 @@ export const getUser = async (req: ExpressRequest, res: Response) => {
     const { user } = req;
     if (user) {
         const { userName, email, firstName, lastName } = user;
-        res.json({
-            error: false,
-            data: {
-                userName, email, firstName, lastName
-            }
-        })
+
     }
 }   
