@@ -14,6 +14,7 @@ export const createError = (res: Response, { code, args = [] }: { code: number, 
 
 
 export const errors: Array<errorArgs> = [
+    // Authentication error
     () => ({
         type: 'AuthenticationError',
         code: 1000,
@@ -44,12 +45,14 @@ export const errors: Array<errorArgs> = [
         message: 'Email/password are incorrect.',
         status: 400,
     }),
+    // Server Error
     (args) => ({
         type: 'ServerError',
         code: 5000,
         message: args ? args[0] : 'Internal server error',
         status: 500,
     }),
+    // Registraton Error
     (args) => ({
         type: 'RegistrationError',
         code: 2000,
@@ -68,5 +71,11 @@ export const errors: Array<errorArgs> = [
         message: args ? args[0] : 'Invalid data',
         status: 400,
     }),
-
+    // Request Error
+    (args) => ({
+        type: 'RequestError',
+        code: 404,
+        message: `Request with ${args ? args[0] : 'this'} method is not found on this path.`,
+        status: 404,
+    })
 ]
