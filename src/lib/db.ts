@@ -6,6 +6,7 @@ mongoose.connect(mongoUrl, {
     useUnifiedTopology: true,
     useCreateIndex: true,
 });
+
 mongoose.Promise = Promise;
 
 const db = mongoose.connection;
