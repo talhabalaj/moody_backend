@@ -57,7 +57,6 @@ userSchema.pre<IUser>('save', async function (next) {
 });
 
 userSchema.virtual('fullName').get(function (this: IUser) {
-    console.log(this);
     return `${this.firstName} ${this.lastName}`;
 })
 
