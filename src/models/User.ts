@@ -1,18 +1,22 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Model } from 'mongoose';
 import { hashPassword } from '../lib/hash';
 
-export interface IUser {
+interface IUserSchema extends Document {
     firstName: string,
     lastName: string,
-    phoneNumber: string,
+    phoneNumber?: string,
     email: string,
     userName: string,
     password: string,
 };
 
-export interface IUserDocument extends Document, IUser { }
+export interface IUser extends IUserSchema {
+    fullName: string,
+}
 
-const userSchema = new mongoose.Schema<IUser>({
+export interface IUserModel extends Model<IUser> { }
+
+const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
         required: true,
@@ -46,10 +50,15 @@ const userSchema = new mongoose.Schema<IUser>({
     },
 }, { timestamps: true })
 
-userSchema.pre<IUserDocument>('save', async function (next) {
+userSchema.pre<IUser>('save', async function (next) {
     if (this.isModified('password')) {
         this.password = await hashPassword(this.password);
     }
 });
 
-export const User = mongoose.model<IUserDocument>('User', userSchema);
+userSchema.virtual('fullName').get(function (this: IUser) {
+    console.log(this);
+    return `${this.firstName} ${this.lastName}`;
+})
+
+export const User = mongoose.model<IUser, IUserModel>('User', userSchema);

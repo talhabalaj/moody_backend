@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 
-import { User, IUser } from "../../models/User";
+import { User } from "../../models/User";
 import { ExpressRequest } from "../../enhancements/ExpressRequest";
 import { createError } from "../../lib/errors";
 import { createResponse } from "../../lib/response";
 
 export const registerUser = async (req: ExpressRequest, res: Response) => {
-    const { userName, email, password, phoneNumber, firstName, lastName }: IUser = req.body;
+    const { userName, email, password, phoneNumber, firstName, lastName } = req.body;
 
     if (await User.exists({ email })) {
         return createError(res, { code: 2000, args: [email] })

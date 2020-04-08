@@ -1,12 +1,17 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Model } from 'mongoose';
+import { IUser } from './User';
 
-export interface IAuthToken {
-    userId: string,
+interface IAuthTokenSchema extends Document {
+    user: IUser['_id'],
     token: string,
     isValid: boolean
 };
 
-export interface IAuthTokenDocument extends Document, IAuthToken { }
+export interface IAuthToken extends IAuthTokenSchema { }
+export interface IAuthTokenWithUser extends IAuthToken {
+    user: IUser,
+}
+export interface IAuthTokenModel extends Model<IAuthToken> { }
 
 const authTokenSchema = new mongoose.Schema<IAuthToken>({
     userId: mongoose.Schema.Types.ObjectId,
@@ -16,4 +21,4 @@ const authTokenSchema = new mongoose.Schema<IAuthToken>({
     isValid: Boolean
 }, { timestamps: true })
 
-export const AuthToken = mongoose.model<IAuthTokenDocument>('AuthToken', authTokenSchema);
+export const AuthToken = mongoose.model<IAuthToken, IAuthTokenModel>('AuthToken', authTokenSchema);

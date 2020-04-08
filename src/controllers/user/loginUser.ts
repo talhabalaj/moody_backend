@@ -17,7 +17,7 @@ export const loginUser = async (req: ExpressRequest, res: Response): Promise<Res
     if (user && await compare(password, user.password)) {
 
         const token = jwt.sign({ id: user._id }, secret, { expiresIn: sessionTime });
-        const tokenInfo: IAuthToken = { userId: user._id, token, isValid: true };
+        const tokenInfo = { user: user._id, token, isValid: true };
         const authToken = new AuthToken(tokenInfo);
 
         try {

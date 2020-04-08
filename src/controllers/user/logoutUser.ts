@@ -11,7 +11,7 @@ export const logoutUser = async (req: ExpressRequest, res: Response) => {
     try {
         const userInfo = await User.findOne({ userName: user?.userName });
         if (userInfo) {
-            await AuthToken.updateOne({ userId: userInfo._id }, { isValid: false });
+            await AuthToken.updateOne({ user: userInfo._id }, { isValid: false });
         }
     } catch (e) {
         return createError(res, { code: 5000, args: [e.message] });
