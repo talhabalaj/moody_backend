@@ -45,6 +45,12 @@ export const errors: Array<errorArgs> = [
         message: 'Email/password are incorrect.',
         status: 400,
     }),
+    () => ({
+        type: 'AuthenticationError',
+        code: 1005,
+        message: 'Token is not valid anymore.',
+        status: 400,
+    }),
     // Server Error
     (args) => ({
         type: 'ServerError',

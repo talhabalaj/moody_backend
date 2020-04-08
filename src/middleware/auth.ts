@@ -4,6 +4,7 @@ import { secret } from '../config';
 import { User } from '../models/User';
 import { ExpressRequest } from '../enhancements/ExpressRequest';
 import { createError } from '../lib/errors';
+import { AuthToken } from '../models/AuthToken';
 
 
 interface JWTVerificationResponse {
@@ -17,15 +18,20 @@ export const authProvider = async (req: ExpressRequest, res: Response, next: Nex
 
     if (token) {
         try {
-            const { id } = jwt.verify(token, secret) as JWTVerificationResponse;
-            const user = await User.findById(id);
-            if (user) {
-                req.user = user;
+            const tokenInfo = await AuthToken.findOne({ token });
+            if (tokenInfo?.isValid) {
+                const { id } = jwt.verify(token, secret) as JWTVerificationResponse;
+                const user = await User.findById(id);
+                if (user) {
+                    req.user = user;
+                    req.token = tokenInfo;
+                }
+            } else {
+                return createError(res, { code: 1005 });
             }
         } catch (e) {
             if (e instanceof JsonWebTokenError) {
                 if (e.name === 'TokenExpiredError') {
-                    // TODO: Refresh the token
                     return createError(res, { code: 1001 });
                 } else if (e.name === 'JsonWebTokenError') {
                     return createError(res, { code: 1000 });
