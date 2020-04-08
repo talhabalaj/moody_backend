@@ -1,7 +1,11 @@
 import mongoose from 'mongoose';
 import { mongoUrl } from '../config';
 
-mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(mongoUrl, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+});
 mongoose.Promise = Promise;
 
 const db = mongoose.connection;
