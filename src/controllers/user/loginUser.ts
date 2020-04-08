@@ -24,7 +24,7 @@ export const loginUser = async (req: ExpressRequest, res: Response): Promise<Res
             await authToken.save();
             return createResponse(res, { status: 202, message: 'Successfully logged in.', data: { tokenInfo } });
         } catch (e) {
-            return createError(res, { code: 5000, args: [e.message] });
+            return createError(res, { code: 500, args: [e.message] });
         }
 
     } else {

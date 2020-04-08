@@ -54,7 +54,7 @@ export const errors: Array<errorArgs> = [
     // Server Error
     (args) => ({
         type: 'ServerError',
-        code: 5000,
+        code: 500,
         message: args ? args[0] : 'Internal server error',
         status: 500,
     }),

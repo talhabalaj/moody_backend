@@ -37,7 +37,7 @@ export const authProvider = async (req: ExpressRequest, res: Response, next: Nex
                     return createError(res, { code: 1000 });
                 }
             } else {
-                return createError(res, { code: 5000, args: [e.message] });
+                return createError(res, { code: 500, args: [e.message] });
             }
         }
     }
