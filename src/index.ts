@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 
 import { mainRouter } from './routes/v1';
 import { port } from './config';
+import './lib/db';
 
 const app = Express();
 
