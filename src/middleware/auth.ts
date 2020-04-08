@@ -46,7 +46,7 @@ export const authProvider = async (req: ExpressRequest, res: Response, next: Nex
 }
 
 export const protectedRoute = async (req: ExpressRequest, res: Response, next: NextFunction) => {
-    if (req.user) {
+    if (req.user && req.token) {
         next();
     } else {
         createError(res, { code: 1002 });
