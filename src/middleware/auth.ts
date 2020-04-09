@@ -54,7 +54,7 @@ export const protectedRoute = async (req: ExpressRequest, res: Response, next: N
 }
 
 export const loginRegisterLock = async (req: ExpressRequest, res: Response, next: NextFunction) => {
-    if (req.user) {
+    if (req.user || req.token) {
         createError(res, { code: 1003 });
     } else {
         next();

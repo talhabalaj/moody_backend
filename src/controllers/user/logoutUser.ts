@@ -8,6 +8,8 @@ export const logoutUser = async (req: ExpressRequest, res: Response) => {
     try {
         if (req.token) {
             await req.token.update({ isValid: false });
+            req.user = undefined;
+            req.token = undefined;
             return createResponse(res, { status: 200, message: 'Successfully logged out.', data: { loggedOut: true } });
         } else {
             return createError(res, { code: 500, args: ['Token doesn\'t exist, not possible in production!'] });
