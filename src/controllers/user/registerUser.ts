@@ -1,12 +1,10 @@
-import { Request, Response } from "express";
-
 import { User } from "../../models/User";
 import { ExpressRequest } from "../../enhancements/ExpressRequest";
 import { createError } from "../../lib/errors";
 import { createResponse } from "../../lib/response";
-import validator from 'validator';
+import { ExpressResponse } from "../../enhancements/ExpressResponse";
 
-export const registerUser = async (req: ExpressRequest, res: Response) => {
+export const registerUser = async (req: ExpressRequest, res: ExpressResponse) => {
     let { userName, email, password, phoneNumber, firstName, lastName } = req.body;
 
     if (await User.exists({ email })) {
@@ -26,7 +24,7 @@ export const registerUser = async (req: ExpressRequest, res: Response) => {
     }
 }
 
-export const checkUserName = async (req: Request, res: Response): Promise<Response<any>> => {
+export const checkUserName = async (req: ExpressRequest, res: ExpressResponse): Promise<ExpressResponse<any>> => {
     if (await User.exists({ userName: req.body.userName })) {
         return createResponse(res, { status: 200, message: 'The user is not available.', data: { valid: false } });
     }
@@ -34,11 +32,11 @@ export const checkUserName = async (req: Request, res: Response): Promise<Respon
     return createResponse(res, { status: 200, message: 'The username is available.', data: { valid: true } });
 }
 
-export const checkEmail = async (req: Request, res: Response): Promise<Response<any>> => {
-    if (await User.exists({ email: req.body.email })) {
-        return createResponse(res, { status: 200, message: 'The email is not available.', data: { valid: false } });
-    }
+// export const checkEmail = async (req: Request, res: Response): Promise<Response<any>> => {
+//     if (await User.exists({ email: req.body.email })) {
+//         return createResponse(res, { status: 200, message: 'The email is not available.', data: { valid: false } });
+//     }
 
-    return createResponse(res, { status: 200, message: 'The email is available.', data: { valid: true } });
-}
+//     return createResponse(res, { status: 200, message: 'The email is available.', data: { valid: true } });
+// }
 
