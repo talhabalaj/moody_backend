@@ -42,13 +42,13 @@ export const errors: Array<errorArgs> = [
     () => ({
         type: 'AuthenticationError',
         code: 1004,
-        message: 'Email/password are incorrect.',
+        message: 'Username/password are incorrect.',
         status: 400,
     }),
     () => ({
         type: 'AuthenticationError',
         code: 1005,
-        message: 'Token is not valid anymore.',
+        message: 'Token is not valid.',
         status: 400,
     }),
     // Server Error
@@ -83,5 +83,12 @@ export const errors: Array<errorArgs> = [
         code: 404,
         message: `Request with ${args ? args[0] : 'this'} method is not found on this path.`,
         status: 404,
+    }),
+    // Update Error
+    () => ({
+        type: 'UpdateError',
+        code: 3000,
+        message: `No fields to update`,
+        status: 400,
     })
 ]

@@ -7,7 +7,7 @@ import { createError } from '../../lib/errors';
 export const logoutUser = async (req: ExpressRequest, res: Response) => {
     try {
         if (req.token) {
-            await req.token.update({ isValid: false });
+            await req.token.updateOne({ isValid: false });
             req.user = undefined;
             req.token = undefined;
             return createResponse(res, { status: 200, message: 'Successfully logged out.', data: { loggedOut: true } });
