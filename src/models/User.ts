@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
         required: true,
-        minlength: 1
+        minlength: 2
     },
     lastName: {
         type: String,
@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
         minlength: 5,
-        match: /[A-z-a-z-0-9]*/
+        match: /^[A-z]*$/
     },
     password: {
         type: String,
