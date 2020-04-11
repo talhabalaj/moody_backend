@@ -1,1 +1,1 @@
-web: yarn ts-start
+web: yarn start
