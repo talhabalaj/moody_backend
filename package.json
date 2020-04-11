@@ -26,6 +26,7 @@
   },
   "scripts": {
     "start": "node dist/index.js",
+    "ts-start": "tsn-node src/index.ts",
     "dev": "ts-node-dev src/index.ts",
     "build": "tsc --build tsconfig.json"
   }
