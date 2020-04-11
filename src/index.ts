@@ -1,14 +1,15 @@
 import Express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-const app = Express();
+import helmet from 'helmet';
 
 import { mainRouter } from './routes/v1';
 import { port } from './config';
-import './lib/db';
 import { escapeBody } from './middleware/escapeBody';
-import helmet from 'helmet';
 
+import './lib/db';
+
+const app = Express();
 
 // Middleware
 app.use(helmet());
