@@ -9,8 +9,8 @@ export const getUser = async (req: ExpressRequest, res: Response) => {
             status: 200, message: 'Successful', data: {
                 _id: user._id,
                 email: user.email,
-                fullName: user.fullName,
-                phoneNo: user.phoneNumber || '',
+                name: user.fullName,
+                userName: user.userName,
             }
         });
     }
