@@ -5,6 +5,7 @@ import { User } from '../models/User';
 import { ExpressRequest } from '../enhancements/ExpressRequest';
 import { createError } from '../lib/errors';
 import { AuthToken } from '../models/AuthToken';
+import { setDeleteServerCookieHeader } from '../lib/header';
 
 
 interface JWTVerificationResponse {
@@ -32,6 +33,7 @@ export const authProvider = async (req: ExpressRequest, res: Response, next: Nex
             }
         } catch (e) {
             if (e instanceof JsonWebTokenError) {
+                setDeleteServerCookieHeader(res, 'access_token');
                 if (e.name === 'TokenExpiredError') {
                     return createError(res, { code: 1001 });
                 } else if (e.name === 'JsonWebTokenError') {
