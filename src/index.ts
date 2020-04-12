@@ -11,13 +11,14 @@ import './lib/db';
 import cookieParser from 'cookie-parser';
 
 const app = Express();
+const corsMiddleware: any = cors({ credentials: true });
 
 // Middleware
 app.use(helmet() as any);
 
 // CORS
-app.use(cors() as any);
-app.options(cors() as any);
+app.use(corsMiddleware);
+app.options(corsMiddleware);
 
 app.use(cookieParser() as any)
 app.use(bodyParser.json());
