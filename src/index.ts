@@ -2,23 +2,23 @@ import Express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 
 import { mainRouter } from './routes/v1';
-import { port } from './config';
+import { port, origin } from './config';
 import { escapeBody } from './middleware/escapeBody';
 
 import './lib/db';
-import cookieParser from 'cookie-parser';
 
 const app = Express();
-const corsMiddleware: any = cors({ credentials: true });
+const corsMiddleware: any = cors({ credentials: true, origin });
 
 // Middleware
 app.use(helmet() as any);
 
 // CORS
-app.use(corsMiddleware);
 app.options(corsMiddleware);
+app.use(corsMiddleware);
 
 app.use(cookieParser() as any)
 app.use(bodyParser.json());
