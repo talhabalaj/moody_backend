@@ -14,7 +14,8 @@ interface JWTVerificationResponse {
 }
 
 export const authProvider = async (req: ExpressRequest, res: Response, next: NextFunction): Promise<any> => {
-    const token = req.headers['authorization']?.split(' ')[1];
+
+    let token = req.cookies['access_token'];
 
     if (token) {
         try {

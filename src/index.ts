@@ -8,6 +8,7 @@ import { port } from './config';
 import { escapeBody } from './middleware/escapeBody';
 
 import './lib/db';
+import cookieParser from 'cookie-parser';
 
 const app = Express();
 
@@ -18,6 +19,7 @@ app.use(helmet() as any);
 app.use(cors() as any);
 app.options(cors() as any);
 
+app.use(cookieParser() as any)
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(escapeBody);

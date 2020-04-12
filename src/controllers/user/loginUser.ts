@@ -19,10 +19,12 @@ export const loginUser = async (req: ExpressRequest, res: Response): Promise<Res
         const token = jwt.sign({ id: user._id }, secret, { expiresIn: sessionTime });
         const tokenInfo = { user: user._id, token, isValid: true };
         const authToken = new AuthToken(tokenInfo);
+        const exposedUser = { userName: user.userName, _id: user._id, email: user.email, name: user.fullName };
 
         try {
             await authToken.save();
-            return createResponse(res, { status: 202, message: 'Successfully logged in.', data: { tokenInfo } });
+            res.setHeader('Set-Cookie', `access_token=${token}; HttpOnly`);
+            return createResponse(res, { status: 202, message: 'Successfully logged in.', data: { user: exposedUser } });
         } catch (e) {
             return createError(res, { code: 500, args: [e.message] });
         }
