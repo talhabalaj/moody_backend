@@ -12,10 +12,14 @@ import './lib/db';
 const app = Express();
 
 // Middleware
-app.use(helmet());
-app.use(cors());
+app.use(helmet() as any);
+
+// CORS
+app.use(cors() as any);
+app.options(cors() as any);
+
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(escapeBody);
 
 // Routes
