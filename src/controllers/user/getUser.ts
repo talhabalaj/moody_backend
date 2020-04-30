@@ -30,6 +30,6 @@ export const getUser = async (req: ExpressRequest, res: ExpressResponse) => {
   } else
     return createError(res, {
       code: 404,
-      args: [`User with ${userName} is not found`],
+      args: [`User with username "${userName}" is not found`],
     });
 };
