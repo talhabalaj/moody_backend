@@ -4,10 +4,15 @@ import { hashPassword } from "../lib/hash";
 interface IUserSchema extends Document {
   firstName: string;
   lastName: string;
+  bio: string;
   phoneNumber?: string;
   email: string;
   userName: string;
   password?: string;
+  followers: Array<mongoose.Schema.Types.ObjectId>;
+  following: Array<mongoose.Schema.Types.ObjectId>;
+  followerCount: number;
+  followingCount: number;
   _createdAt: Date;
   _updatedAt: Date;
 }
@@ -33,6 +38,11 @@ const userSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
     },
+    bio: {
+      type: String,
+      default: "",
+      maxlength: 256,
+    },
     email: {
       type: String,
       required: true,
@@ -53,6 +63,26 @@ const userSchema = new mongoose.Schema(
       minlength: 8,
       select: false,
     },
+    followers: {
+      type: [mongoose.Schema.Types.ObjectId],
+      default: [],
+      select: false,
+      ref: "User",
+    },
+    following: {
+      type: [mongoose.Schema.Types.ObjectId],
+      default: [],
+      select: false,
+      ref: "User",
+    },
+    followerCount: {
+      type: Number,
+      default: 0,
+    },
+    followingCount: {
+      type: Number,
+      default: 0,
+    },
     _createdAt: {
       type: Date,
       select: false,
@@ -62,13 +92,20 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
   },
-  { timestamps: { createdAt: "_createdAt", updatedAt: "_updatedAt" } }
+  {
+    timestamps: { createdAt: "_createdAt", updatedAt: "_updatedAt" },
+  }
 );
 
 userSchema.pre<IUser>("save", async function (next) {
   if (this.isModified("password") && this.password) {
     this.password = await hashPassword(this.password);
   }
+});
+
+userSchema.post<IUser>(/update/i, function (doc, next) {
+  if (doc.isModified("following")) doc.followingCount = doc.following.length;
+  if (doc.isModified("followers")) doc.followerCount = doc.followers.length;
 });
 
 userSchema.virtual("fullName").get(function (this: IUser) {

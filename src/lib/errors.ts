@@ -87,9 +87,7 @@ export const errors: Array<errorArgs> = [
   (args) => ({
     type: "RequestError",
     code: 404,
-    message: `Request with ${
-      args ? args[0] : "this"
-    } method is not found on this path.`,
+    message: args ? args[0] : "404 not found.",
     status: 404,
   }),
   // Update Error
