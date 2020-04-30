@@ -32,11 +32,11 @@ export const checkUserName = async (req: ExpressRequest, res: ExpressResponse): 
     return createResponse(res, { status: 200, message: 'The username is available.', data: { valid: true } });
 }
 
-// export const checkEmail = async (req: Request, res: Response): Promise<Response<any>> => {
-//     if (await User.exists({ email: req.body.email })) {
-//         return createResponse(res, { status: 200, message: 'The email is not available.', data: { valid: false } });
-//     }
+export const checkEmail = async (req: ExpressRequest, res: ExpressResponse): Promise<ExpressResponse<any>> => {
+    if (await User.exists({ email: req.body.email })) {
+        return createResponse(res, { status: 200, message: 'The email is not available.', data: { valid: false } });
+    }
 
-//     return createResponse(res, { status: 200, message: 'The email is available.', data: { valid: true } });
-// }
+    return createResponse(res, { status: 200, message: 'The email is available.', data: { valid: true } });
+}
 

@@ -1,63 +1,78 @@
-import mongoose, { Document, Model } from 'mongoose';
-import { hashPassword } from '../lib/hash';
+import mongoose, { Document, Model } from "mongoose";
+import { hashPassword } from "../lib/hash";
 
 interface IUserSchema extends Document {
-    firstName: string,
-    lastName: string,
-    phoneNumber?: string,
-    email: string,
-    userName: string,
-    password: string,
-};
-
-export interface IUser extends IUserSchema {
-    fullName: string,
+  firstName: string;
+  lastName: string;
+  phoneNumber?: string;
+  email: string;
+  userName: string;
+  password?: string;
+  _createdAt: Date;
+  _updatedAt: Date;
 }
 
-export interface IUserModel extends Model<IUser> { }
+export interface IUser extends IUserSchema {
+  fullName: string;
+}
 
-const userSchema = new mongoose.Schema({
+export interface IUserModel extends Model<IUser> {}
+
+const userSchema = new mongoose.Schema(
+  {
     firstName: {
-        type: String,
-        required: true,
-        minlength: 2
+      type: String,
+      required: true,
+      minlength: 2,
     },
     lastName: {
-        type: String,
-        required: true,
-        minlength: 1
+      type: String,
+      required: true,
+      minlength: 1,
     },
     phoneNumber: {
-        type: String,
+      type: String,
     },
     email: {
-        type: String,
-        required: true,
-        unique: true,
-        match: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+      type: String,
+      required: true,
+      unique: true,
+      match: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
     },
     userName: {
-        type: String,
-        required: true,
-        unique: true,
-        minlength: 5,
-        match: /^[A-z]*$/
+      type: String,
+      required: true,
+      unique: true,
+      minlength: 5,
+      lowercase: true,
+      match: /^[A-z]*$/,
     },
     password: {
-        type: String,
-        required: true,
-        minlength: 8
+      type: String,
+      required: true,
+      minlength: 8,
+      select: false,
     },
-}, { timestamps: true })
+    _createdAt: {
+      type: Date,
+      select: false,
+    },
+    _updatedAt: {
+      type: Date,
+      select: false,
+    },
+  },
+  { timestamps: { createdAt: "_createdAt", updatedAt: "_updatedAt" } }
+);
 
-userSchema.pre<IUser>('save', async function (next) {
-    if (this.isModified('password')) {
-        this.password = await hashPassword(this.password);
-    }
+userSchema.pre<IUser>("save", async function (next) {
+  if (this.isModified("password") && this.password) {
+    this.password = await hashPassword(this.password);
+  }
 });
 
-userSchema.virtual('fullName').get(function (this: IUser) {
-    return `${this.firstName} ${this.lastName}`;
-})
+userSchema.virtual("fullName").get(function (this: IUser) {
+  return `${this.firstName} ${this.lastName}`;
+});
 
-export const User = mongoose.model<IUser, IUserModel>('User', userSchema);
+export const User = mongoose.model<IUser, IUserModel>("User", userSchema);

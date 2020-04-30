@@ -43,7 +43,7 @@ export const errors: Array<errorArgs> = [
         type: 'AuthenticationError',
         code: 1004,
         message: 'Username/password are incorrect.',
-        status: 400,
+        status: 401,
     }),
     () => ({
         type: 'AuthenticationError',
