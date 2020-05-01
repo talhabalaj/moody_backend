@@ -1,8 +1,8 @@
-import { Request } from 'express';
-import { IUser } from '../models/User';
-import { IAuthToken } from '../models/AuthToken';
+import { Request } from "express";
+import { IUser } from "../models/User";
+import { IAuthToken } from "../models/AuthToken";
 
 export interface ExpressRequest extends Request {
-    user?: IUser,
-    token?: IAuthToken
+  user?: IUser;
+  token?: IAuthToken;
 }

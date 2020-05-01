@@ -42,10 +42,6 @@ const authTokenSchema = new mongoose.Schema<IAuthToken>(
   { timestamps: { createdAt: "_createdAt", updatedAt: "_updatedAt" } }
 );
 
-authTokenSchema.post("populate", (doc, next) => {
-  console.log("CALLED");
-});
-
 export const AuthToken = mongoose.model<IAuthToken, IAuthTokenModel>(
   "AuthToken",
   authTokenSchema

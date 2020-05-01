@@ -12,7 +12,6 @@ export const feed = async (req: ExpressRequest, res: ExpressResponse) => {
   assert(user?.following, "[feed] following on user must exist");
 
   if (user && user.following) {
-    console.log(user.following.toObject());
     const posts = await Post.find({ user: { $in: user.following } });
     return createResponse(res, {
       status: 200,

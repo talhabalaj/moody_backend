@@ -1,14 +1,15 @@
-import { Response } from 'express';
+import { Response } from "express";
 
 export interface WebServerResponse {
-    status: number,
-    message: string,
-    data?: Object,
+  status: number;
+  message: string;
+  data?: Object;
 }
 
 export interface WebServerResponseError extends WebServerResponse {
-    type: string,
-    code: number,
+  type: string;
+  code: number;
 }
 
-export const createResponse = (res: Response, data: WebServerResponse) => res.status(data.status).json(data);
+export const createResponse = (res: Response, data: WebServerResponse) =>
+  res.status(data.status).json(data);

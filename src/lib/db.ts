@@ -1,20 +1,20 @@
-import mongoose from 'mongoose';
-import { mongoUrl } from '../config';
+import mongoose from "mongoose";
+import { mongoUrl } from "../config";
 
 mongoose.connect(mongoUrl, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
 });
 
 mongoose.Promise = Promise;
 
 const db = mongoose.connection;
 
-db.on('error', console.error.bind(console, 'Database connection error:'));
+db.on("error", console.error.bind(console, "Database connection error:"));
 
-db.once('open', () => {
-    console.log("Connection to database succesfull");
+db.once("open", () => {
+  console.log("Connection to database successfull");
 });
 
 export { db };
