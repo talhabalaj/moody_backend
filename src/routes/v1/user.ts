@@ -13,6 +13,7 @@ import {
   loginRegisterLock,
 } from "../../middleware/auth";
 import { updateUser } from "../../controllers/user";
+import { followUser, unfollowUser } from "../../controllers/user/followUser";
 
 const userRouter = Router();
 
@@ -23,6 +24,18 @@ userRouter.post("/login", authProvider, loginRegisterLock, loginUser);
 
 userRouter.get("/logout", authProvider, protectedRoute, logoutUser);
 userRouter.get("/profile/:userName?", authProvider, protectedRoute, getUser);
+userRouter.get(
+  "/profile/:userName/follow",
+  authProvider,
+  protectedRoute,
+  followUser
+);
+userRouter.get(
+  "/profile/:userName/unfollow",
+  authProvider,
+  protectedRoute,
+  unfollowUser
+);
 userRouter.put("/profile", authProvider, protectedRoute, updateUser);
 
 export { userRouter };

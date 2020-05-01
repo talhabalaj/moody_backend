@@ -3,6 +3,7 @@ import multer from "multer";
 import { authProvider, protectedRoute } from "../../middleware/auth";
 import { createPost } from "../../controllers/posts/createPost";
 import { createError } from "../../lib/errors";
+import { getPost } from "../../controllers/posts/getPost";
 
 const postsRouter = Router();
 const upload = multer({
@@ -32,5 +33,7 @@ postsRouter.post(
   },
   createPost
 );
+
+postsRouter.get("/:postId", authProvider, protectedRoute, getPost);
 
 export { postsRouter };

@@ -8,8 +8,8 @@ interface IPostSchema extends Document {
   user: IUser["_id"];
   imageUrl: string;
   caption: string;
-  likes: Array<IUser["_id"]>;
-  comments: Array<IComment["_id"]>;
+  likes: mongoose.Types.Array<IUser["_id"]>;
+  comments: mongoose.Types.Array<IComment["_id"]>;
   createdAt: Date;
   updatedAt: Date;
 }

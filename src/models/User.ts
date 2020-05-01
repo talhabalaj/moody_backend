@@ -9,8 +9,8 @@ interface IUserSchema extends Document {
   email: string;
   userName: string;
   password?: string;
-  followers: Array<mongoose.Schema.Types.ObjectId>;
-  following: Array<mongoose.Schema.Types.ObjectId>;
+  followers?: mongoose.Types.Array<mongoose.Types.ObjectId>;
+  following?: mongoose.Types.Array<mongoose.Types.ObjectId>;
   followerCount: number;
   followingCount: number;
   _createdAt: Date;
@@ -19,6 +19,8 @@ interface IUserSchema extends Document {
 
 export interface IUser extends IUserSchema {
   fullName: string;
+  addFollower: (userName: string) => Promise<boolean>;
+  removeFollower: (userName: string) => Promise<boolean>;
 }
 
 export interface IUserModel extends Model<IUser> {}
@@ -101,12 +103,65 @@ userSchema.pre<IUser>("save", async function (next) {
   if (this.isModified("password") && this.password) {
     this.password = await hashPassword(this.password);
   }
+
+  if (this.isModified("followers"))
+    this.followerCount = this.followers?.length || 0;
+
+  if (this.isModified("following"))
+    this.followingCount = this.following?.length || 0;
 });
 
-userSchema.post<IUser>(/update/i, function (doc, next) {
-  if (doc.isModified("following")) doc.followingCount = doc.following.length;
-  if (doc.isModified("followers")) doc.followerCount = doc.followers.length;
-});
+userSchema.methods.addFollower = async function (
+  this: IUser,
+  userName: string
+) {
+  const user = await User.findById(this._id).select("+followers");
+  const userToFollow = await User.findOne({ userName }).select("+following");
+  if (user) {
+    if (!userToFollow) {
+      throw Error("The user you are trying to follow doesn't exist.");
+    }
+
+    if (user.followers && userToFollow.following) {
+      if (user.followers.indexOf(userToFollow._id) !== -1) {
+        return false;
+      }
+      user.followers.push(userToFollow._id);
+      userToFollow.following.push(user._id);
+
+      user.save();
+      userToFollow.save();
+      return true;
+    }
+  }
+
+  return false;
+};
+
+userSchema.methods.removeFollower = async function (
+  this: IUser,
+  userName: string
+) {
+  const user = await User.findById(this._id).select("+followers");
+  const userToFollow = await User.findOne({ userName }).select("+following");
+  if (user) {
+    if (!userToFollow) {
+      throw Error("The user you are trying to follow doesn't exist.");
+    }
+    if (user.followers && userToFollow.following) {
+      if (user.followers.indexOf(userToFollow._id) === -1) {
+        return false;
+      }
+      user.followers.pull(userToFollow._id);
+      userToFollow.following.pull(user._id);
+      user.save();
+      userToFollow.save();
+      return true;
+    }
+  }
+
+  return false;
+};
 
 userSchema.virtual("fullName").get(function (this: IUser) {
   return `${this.firstName} ${this.lastName}`;
