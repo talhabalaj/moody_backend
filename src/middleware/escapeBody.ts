@@ -10,7 +10,7 @@ export const escapeBody = (
 ) => {
   if (req.body) {
     Object.keys(req.body).forEach((key) => {
-      req.body[key] = validator.escape(req.body[key]);
+      if (req.body[key]) req.body[key] = validator.escape(req.body[key]);
     });
   }
 
