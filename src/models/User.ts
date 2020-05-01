@@ -13,6 +13,7 @@ interface IUserSchema extends Document {
   following?: mongoose.Types.Array<mongoose.Types.ObjectId>;
   followerCount: number;
   followingCount: number;
+  profilePicUrl: string;
   _createdAt: Date;
   _updatedAt: Date;
 }
@@ -84,6 +85,11 @@ const userSchema = new mongoose.Schema(
     followingCount: {
       type: Number,
       default: 0,
+    },
+    profilePicUrl: {
+      type: String,
+      default:
+        "https://res.cloudinary.com/dnakyuj25/image/upload/c_fit,q_auto,w_300/v1588297947/placeholder.png",
     },
     _createdAt: {
       type: Date,

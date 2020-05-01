@@ -1,7 +1,5 @@
 import { Router } from "express";
 
-import { loginUser, logoutUser } from "../../controllers/user";
-import { getUser } from "../../controllers/user";
 import {
   registerUser,
   checkUserName,
@@ -12,8 +10,11 @@ import {
   authProvider,
   loginRegisterLock,
 } from "../../middleware/auth";
-import { updateUser } from "../../controllers/user";
 import { followUser, unfollowUser } from "../../controllers/user/followUser";
+import { loginUser } from "../../controllers/user/loginUser";
+import { logoutUser } from "../../controllers/user/logoutUser";
+import { getUser } from "../../controllers/user/getUser";
+import { updateUser } from "../../controllers/user/updateUser";
 
 const userRouter = Router();
 
