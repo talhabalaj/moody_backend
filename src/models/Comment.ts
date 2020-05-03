@@ -8,7 +8,7 @@ interface ICommentSchema extends Document {
   user: IUser["_id"];
   post: IPost["_id"];
   message: string;
-  replies?: Array<IComment>;
+  replies?: Array<mongoose.Types.ObjectId>;
   replyOf?: ICommentSchema["_id"];
   createdAt: Date;
   updatedAt: Date;
@@ -40,6 +40,7 @@ export const commentSchema = new mongoose.Schema<IComment>(
     replyOf: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Comment",
+      default: null,
     },
   },
   { timestamps: true }

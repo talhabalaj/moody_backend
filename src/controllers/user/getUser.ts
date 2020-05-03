@@ -9,7 +9,11 @@ export const getUser = async (req: ExpressRequest, res: ExpressResponse) => {
   let { user } = req;
   const { userName } = req.params;
 
-  if (userName) user = (await User.findOne({ userName })) || undefined;
+  if (userName)
+    user =
+      (await User.findOne({ userName }).select(
+        "+followerCount +followingCount +bio +followers +following"
+      )) || undefined;
 
   if (user) {
     const posts = await Post.find({ user: user._id });

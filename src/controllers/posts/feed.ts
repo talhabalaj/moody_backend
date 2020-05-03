@@ -2,7 +2,12 @@ import { ExpressRequest } from "../../enhancements/ExpressRequest";
 import { ExpressResponse } from "../../enhancements/ExpressResponse";
 import assert from "assert";
 import { createError } from "../../lib/errors";
-import { Post } from "../../models/Post";
+import {
+  Post,
+  IPost_withPComments,
+  IPost_withPLikes,
+  IPost_withPUser,
+} from "../../models/Post";
 import { createResponse } from "../../lib/response";
 
 export const feed = async (req: ExpressRequest, res: ExpressResponse) => {
@@ -12,7 +17,13 @@ export const feed = async (req: ExpressRequest, res: ExpressResponse) => {
   assert(user?.following, "[feed] following on user must exist");
 
   if (user && user.following) {
-    const posts = await Post.find({ user: { $in: user.following } });
+    const posts: (IPost_withPComments &
+      IPost_withPLikes &
+      IPost_withPUser)[] = await Post.find({ user: { $in: user.following } })
+      .populate("user")
+      .populate("likes")
+      .populate("comments");
+
     return createResponse(res, {
       status: 200,
       message: "Successful",

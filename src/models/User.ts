@@ -4,15 +4,15 @@ import { hashPassword } from "../lib/hash";
 interface IUserSchema extends Document {
   firstName: string;
   lastName: string;
-  bio: string;
+  bio?: string;
   phoneNumber?: string;
-  email: string;
+  email?: string;
   userName: string;
   password?: string;
   followers?: mongoose.Types.Array<mongoose.Types.ObjectId>;
   following?: mongoose.Types.Array<mongoose.Types.ObjectId>;
-  followerCount: number;
-  followingCount: number;
+  followerCount?: number;
+  followingCount?: number;
   profilePicUrl: string;
   _createdAt: Date;
   _updatedAt: Date;
@@ -40,16 +40,19 @@ const userSchema = new mongoose.Schema(
     },
     phoneNumber: {
       type: String,
+      select: false,
     },
     bio: {
       type: String,
       default: "",
       maxlength: 256,
+      select: false,
     },
     email: {
       type: String,
       required: true,
       unique: true,
+      select: false,
       match: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
     },
     userName: {
@@ -81,10 +84,12 @@ const userSchema = new mongoose.Schema(
     followerCount: {
       type: Number,
       default: 0,
+      select: false,
     },
     followingCount: {
       type: Number,
       default: 0,
+      select: false,
     },
     profilePicUrl: {
       type: String,

@@ -16,6 +16,16 @@ interface IPostSchema extends Document {
 
 export interface IPost extends IPostSchema {}
 export interface IPostModel extends Model<IPost> {}
+export interface IPost_withPLikes extends IPost {
+  likes: mongoose.Types.Array<IUser>;
+}
+export interface IPost_withPComments extends IPost {
+  comments: mongoose.Types.Array<IComment>;
+}
+
+export interface IPost_withPUser extends IPost {
+  user: IUser;
+}
 
 const postSchema = new mongoose.Schema<IPost>(
   {

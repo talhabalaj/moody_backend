@@ -25,7 +25,9 @@ export const authProvider = async (
       const tokenInfo = await AuthToken.findOne({ token });
       if (tokenInfo?.isValid) {
         const { id } = jwt.verify(token, secret) as JWTVerificationResponse;
-        const user = await User.findById(id).select("+followers +following");
+        const user = await User.findById(id).select(
+          "+followers +following +followerCount +followingCount +email"
+        );
         if (user) {
           req.user = user;
           req.token = tokenInfo;
