@@ -1,4 +1,5 @@
 import { Router } from "express";
+import multer from "multer";
 
 import {
   registerUser,
@@ -15,6 +16,8 @@ import { loginUser } from "../../controllers/user/loginUser";
 import { logoutUser } from "../../controllers/user/logoutUser";
 import { getUser } from "../../controllers/user/getUser";
 import { updateUser } from "../../controllers/user/updateUser";
+import { upload } from "../../middleware/update";
+import { createError } from "../../lib/errors";
 
 const userRouter = Router();
 
@@ -37,6 +40,19 @@ userRouter.get(
   protectedRoute,
   unfollowUser
 );
-userRouter.put("/profile", authProvider, protectedRoute, updateUser);
+userRouter.put(
+  "/profile",
+  authProvider,
+  protectedRoute,
+  (req, res, next) => {
+    upload(req, res, (err: Error) => {
+      if (err instanceof multer.MulterError) {
+        return createError(res, { code: 4000, args: [err.message] });
+      }
+      return next();
+    });
+  },
+  updateUser
+);
 
 export { userRouter };

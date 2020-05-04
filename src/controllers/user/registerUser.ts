@@ -3,6 +3,7 @@ import { ExpressRequest } from "../../enhancements/ExpressRequest";
 import { createError } from "../../lib/errors";
 import { createResponse } from "../../lib/response";
 import { ExpressResponse } from "../../enhancements/ExpressResponse";
+import { verifyEmail } from "../../lib/verify-email";
 
 export const registerUser = async (
   req: ExpressRequest,
@@ -23,6 +24,10 @@ export const registerUser = async (
 
   if (await User.exists({ userName })) {
     return createError(res, { code: 2001, args: [userName] });
+  }
+
+  if (await verifyEmail(email)) {
+    return createError(res, { code: 2002, args: ["Email is not valid"] });
   }
 
   try {
