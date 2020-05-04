@@ -1,3 +1,6 @@
+import DataURIParser from "datauri/parser";
+import cloudinary from "cloudinary";
+
 import { ExpressRequest } from "../../enhancements/ExpressRequest";
 import { ExpressResponse } from "../../enhancements/ExpressResponse";
 import { createResponse } from "../../lib/response";
@@ -5,11 +8,23 @@ import { createError } from "../../lib/errors";
 
 export const updateUser = async (req: ExpressRequest, res: ExpressResponse) => {
   const { phoneNumber, firstName, lastName } = req.body;
+  const { file } = req;
   const fieldsToUpdate: any = {};
 
   if (phoneNumber) fieldsToUpdate.phoneNumber = phoneNumber;
   if (firstName) fieldsToUpdate.firstName = firstName;
   if (lastName) fieldsToUpdate.lastName = lastName;
+  if (file) {
+    // make data uri parser
+    const parser = new DataURIParser();
+    // make data uri from buffer
+    const file = <string>(
+      parser.format(req.file.originalname, req.file.buffer).content
+    );
+
+    const uploaded = await cloudinary.v2.uploader.upload(file);
+    fieldsToUpdate.profilePicUrl = uploaded.secure_url;
+  }
 
   if (!Object.keys(fieldsToUpdate).length) {
     return createError(res, { code: 3000 });

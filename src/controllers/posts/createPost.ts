@@ -1,7 +1,6 @@
 import cloudinary from "cloudinary";
 import assert from "assert";
-// @ts-ignore
-import DataURI from "datauri";
+import DataURIParser from "datauri/parser";
 
 import { ExpressRequest } from "../../enhancements/ExpressRequest";
 import { ExpressResponse } from "../../enhancements/ExpressResponse";
@@ -20,9 +19,12 @@ export const createPost = async (req: ExpressRequest, res: ExpressResponse) => {
     });
   }
 
+  // make data uri parser
+  const parser = new DataURIParser();
   // make data uri from buffer
-  const datauri = new DataURI();
-  const file = datauri.format(req.file.originalname, req.file.buffer).content;
+  const file = <string>(
+    parser.format(req.file.originalname, req.file.buffer).content
+  );
 
   // get body of post
   const { caption = "" } = req.body;
@@ -36,9 +38,7 @@ export const createPost = async (req: ExpressRequest, res: ExpressResponse) => {
 
   try {
     // upload to cloudinary
-    const uploaded = await cloudinary.v2.uploader.upload(file, {
-      image_metadata: false,
-    });
+    const uploaded = await cloudinary.v2.uploader.upload(file);
 
     // save to database
     const post = await Post.create({
