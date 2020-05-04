@@ -19,7 +19,9 @@ export const feed = async (req: ExpressRequest, res: ExpressResponse) => {
   if (user && user.following) {
     const posts: (IPost_withPComments &
       IPost_withPLikes &
-      IPost_withPUser)[] = await Post.find({ user: { $in: user.following } })
+      IPost_withPUser)[] = await Post.find({
+      user: { $in: [...user.following, user._id] },
+    })
       .populate("user")
       .populate("likes")
       .populate("comments");
