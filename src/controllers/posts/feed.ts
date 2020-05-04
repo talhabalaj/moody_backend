@@ -20,8 +20,10 @@ export const feed = async (req: ExpressRequest, res: ExpressResponse) => {
     const posts: (IPost_withPComments &
       IPost_withPLikes &
       IPost_withPUser)[] = await Post.find({
-      user: { $in: [...user.following, user._id] },
+      user: { $in: user.following },
     })
+      .limit(10)
+      .sort({ createdAt: -1 })
       .populate("user")
       .populate("likes")
       .populate("comments");

@@ -6,7 +6,7 @@ import { Comment } from "./models/Comment";
 
 async function main() {
   const user = await User.findOne({ userName: "talhabalaj" });
-  user && user.removeFollower("talha");
+  user && user.unfollow("talha");
 }
 
 main().catch((e: Error) => console.error(e.message));

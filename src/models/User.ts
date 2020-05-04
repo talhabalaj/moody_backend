@@ -20,8 +20,8 @@ interface IUserSchema extends Document {
 
 export interface IUser extends IUserSchema {
   fullName: string;
-  addFollower: (userName: string) => Promise<boolean>;
-  removeFollower: (userName: string) => Promise<boolean>;
+  follow: (userName: string) => Promise<boolean>;
+  unfollow: (userName: string) => Promise<boolean>;
 }
 
 export interface IUserModel extends Model<IUser> {}
@@ -122,23 +122,20 @@ userSchema.pre<IUser>("save", async function (next) {
     this.followingCount = this.following?.length || 0;
 });
 
-userSchema.methods.addFollower = async function (
-  this: IUser,
-  userName: string
-) {
-  const user = await User.findById(this._id).select("+followers");
-  const userToFollow = await User.findOne({ userName }).select("+following");
+userSchema.methods.follow = async function (this: IUser, userName: string) {
+  const user = this;
+  const userToFollow = await User.findOne({ userName }).select("+followers");
   if (user) {
     if (!userToFollow) {
       throw Error("The user you are trying to follow doesn't exist.");
     }
 
-    if (user.followers && userToFollow.following) {
-      if (user.followers.indexOf(userToFollow._id) !== -1) {
+    if (user.following && userToFollow.followers) {
+      if (user.following.indexOf(userToFollow._id) !== -1) {
         return false;
       }
-      user.followers.push(userToFollow._id);
-      userToFollow.following.push(user._id);
+      user.following.push(userToFollow._id);
+      userToFollow.followers.push(user._id);
 
       user.save();
       userToFollow.save();
@@ -149,22 +146,20 @@ userSchema.methods.addFollower = async function (
   return false;
 };
 
-userSchema.methods.removeFollower = async function (
-  this: IUser,
-  userName: string
-) {
-  const user = await User.findById(this._id).select("+followers");
-  const userToFollow = await User.findOne({ userName }).select("+following");
+userSchema.methods.unfollow = async function (this: IUser, userName: string) {
+  const user = this;
+  const userToFollow = await User.findOne({ userName }).select("+followers");
   if (user) {
     if (!userToFollow) {
       throw Error("The user you are trying to follow doesn't exist.");
     }
-    if (user.followers && userToFollow.following) {
-      if (user.followers.indexOf(userToFollow._id) === -1) {
+    if (user.following && userToFollow.followers) {
+      if (user.following.indexOf(userToFollow._id) === -1) {
         return false;
       }
-      user.followers.pull(userToFollow._id);
-      userToFollow.following.pull(user._id);
+      user.following.pull(userToFollow._id);
+      userToFollow.followers.pull(user._id);
+
       user.save();
       userToFollow.save();
       return true;

@@ -12,7 +12,7 @@ export const followUser = async (req: ExpressRequest, res: ExpressResponse) => {
   const { userName } = req.params;
 
   try {
-    const modified = await user?.addFollower(userName);
+    const modified = await user?.follow(userName);
     return createResponse(res, {
       status: 200,
       message: "Successfull",
@@ -37,7 +37,7 @@ export const unfollowUser = async (
     if (!userToUnfollow)
       return createError(res, { code: 404, args: ["User not found"] });
     let modified = false;
-    if (user) modified = await userToUnfollow.removeFollower(user?.userName);
+    if (user) modified = await userToUnfollow.unfollow(user?.userName);
     return createResponse(res, {
       status: 200,
       message: "Successfull",
