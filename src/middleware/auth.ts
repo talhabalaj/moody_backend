@@ -26,7 +26,7 @@ export const authProvider = async (
       if (tokenInfo?.isValid) {
         const { id } = jwt.verify(token, secret) as JWTVerificationResponse;
         const user = await User.findById(id).select(
-          "+followers +following +followerCount +followingCount +email"
+          "+followers +following +followerCount +followingCount +email +bio"
         );
         if (user) {
           req.user = user;

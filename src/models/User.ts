@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema(
     },
     bio: {
       type: String,
-      default: "",
+      default: "Hey",
       maxlength: 256,
       select: false,
     },

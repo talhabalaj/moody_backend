@@ -20,14 +20,13 @@ export const loginUser = async (
     const token = jwt.sign({ id: user._id }, secret, {
       expiresIn: sessionTime,
     });
-    const tokenInfo = { user: user._id, token, isValid: true };
-    const authToken = new AuthToken(tokenInfo);
-    const exposedUser = {
-      userName: user.userName,
-      _id: user._id,
-      email: user.email,
-      name: user.fullName,
+    const tokenInfo = {
+      user: user._id,
+      token,
+      isValid: true,
+      expiresAt: new Date(Date.now() + sessionTime),
     };
+    const authToken = new AuthToken(tokenInfo);
 
     try {
       await authToken.save();
@@ -35,7 +34,7 @@ export const loginUser = async (
       return createResponse(res, {
         status: 202,
         message: "Successfully logged in.",
-        data: { user: exposedUser },
+        data: { tokenInfo: tokenInfo },
       });
     } catch (e) {
       return createError(res, { code: 500, args: [e.message] });

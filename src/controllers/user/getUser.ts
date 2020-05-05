@@ -16,19 +16,11 @@ export const getUser = async (req: ExpressRequest, res: ExpressResponse) => {
       )) || undefined;
 
   if (user) {
-    const posts = await Post.find({ user: user._id });
-
     return createResponse(res, {
       status: 200,
       message: "Successfully fetched.",
       data: {
-        user: {
-          fullName: user.fullName,
-          followerCount: user.followerCount,
-          followingCount: user.followingCount,
-          bio: user.bio,
-          posts,
-        },
+        user,
       },
     });
   } else
