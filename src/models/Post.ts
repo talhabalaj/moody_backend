@@ -14,7 +14,10 @@ interface IPostSchema extends Document {
   updatedAt: Date;
 }
 
-export interface IPost extends IPostSchema {}
+export interface IPost extends IPostSchema {
+  like: (userId: mongoose.Types.ObjectId) => Promise<boolean>;
+  unlike: (userId: mongoose.Types.ObjectId) => Promise<boolean>;
+}
 export interface IPostModel extends Model<IPost> {}
 export interface IPost_withPLikes extends IPost {
   likes: mongoose.Types.Array<IUser>;
@@ -43,17 +46,39 @@ const postSchema = new mongoose.Schema<IPost>(
       default: "",
     },
     likes: {
-      type: [mongoose.Schema.Types.ObjectId],
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
       default: [],
-      ref: "User",
     },
     comments: {
-      type: [mongoose.Schema.Types.ObjectId],
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
       default: [],
-      ref: "Comment",
     },
   },
   { timestamps: true }
 );
+
+postSchema.methods.like = async function (
+  this: IPost,
+  userId: mongoose.Types.ObjectId
+) {
+  if (this.likes.indexOf(userId) == -1) {
+    this.likes.push(userId);
+    this.save();
+    return true;
+  }
+  return false;
+};
+
+postSchema.methods.unlike = async function (
+  this: IPost,
+  userId: mongoose.Types.ObjectId
+) {
+  if (this.likes.indexOf(userId) != -1) {
+    this.likes.pull(userId);
+    this.save();
+    return true;
+  }
+  return false;
+};
 
 export const Post = mongoose.model<IPost, IPostModel>("Post", postSchema);
