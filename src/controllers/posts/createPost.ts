@@ -38,7 +38,13 @@ export const createPost = async (req: ExpressRequest, res: ExpressResponse) => {
 
   try {
     // upload to cloudinary
-    const uploaded = await cloudinary.v2.uploader.upload(file);
+    const uploaded = await cloudinary.v2.uploader.upload(file, {
+      transformation: {
+        height: 1080,
+        quality: "auto:best",
+        crop: "scale",
+      },
+    });
 
     // save to database
     const post = await Post.create({

@@ -19,7 +19,7 @@ export const feed = async (req: ExpressRequest, res: ExpressResponse) => {
 
   if (user && user.following) {
     const posts = await Post.find({
-      user: { $in: user.following },
+      user: { $in: [...user.following, user._id] },
     })
       .sort({ createdAt: -1 })
       .skip(offset ? parseInt(offset) : 0)
