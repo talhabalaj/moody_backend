@@ -34,8 +34,7 @@ export const commentSchema = new mongoose.Schema<IComment>(
       required: true,
     },
     replies: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "Comment",
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     },
     replyOf: {
       type: mongoose.Schema.Types.ObjectId,

@@ -25,7 +25,10 @@ postsRouter.post(
 );
 
 postsRouter.get("/:postId", authProvider, protectedRoute, getPost);
+// postsRouter.delete("/:postId", authProvider, protectedRoute, deletePost);
+// postsRouter.put('/:postId', authProvider, protectedRoute, updatePost);
 postsRouter.get("/:postId/like", authProvider, protectedRoute, likePost);
 postsRouter.get("/:postId/unlike", authProvider, protectedRoute, unLike);
+// postsRouter.post("/:postId/comment", authProvider, protectedRoute, () => {});
 
 export { postsRouter };

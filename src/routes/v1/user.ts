@@ -18,6 +18,7 @@ import { getUser } from "../../controllers/user/getUser";
 import { updateUser } from "../../controllers/user/updateUser";
 import { upload } from "../../middleware/update";
 import { createError } from "../../lib/errors";
+import { searchUser } from "../../controllers/user/searchUser";
 
 const userRouter = Router();
 
@@ -40,6 +41,8 @@ userRouter.get(
   protectedRoute,
   unfollowUser
 );
+userRouter.get("/search", authProvider, protectedRoute, searchUser);
+
 userRouter.put(
   "/profile",
   authProvider,
