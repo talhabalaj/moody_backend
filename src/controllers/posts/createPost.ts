@@ -47,16 +47,18 @@ export const createPost = async (req: ExpressRequest, res: ExpressResponse) => {
     });
 
     // save to database
-    const post = await Post.create({
+    let post = new Post({
       imageUrl: uploaded.secure_url,
       user: req.user ? req.user._id : null,
       caption,
     });
 
+    await post.save();
+
     // Success response
     return createResponse(res, {
       status: 200,
-      data: { post },
+      data: { post: await Post.findById(post._id).populate("user") },
       message: "Successfully posted.",
     });
   } catch (e) {
