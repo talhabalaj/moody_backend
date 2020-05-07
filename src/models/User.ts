@@ -1,6 +1,8 @@
 import mongoose, { Document, Model } from "mongoose";
 import { hashPassword } from "../lib/hash";
 
+type id = mongoose.Types.ObjectId;
+
 interface IUserSchema extends Document {
   firstName: string;
   lastName: string;
@@ -9,8 +11,8 @@ interface IUserSchema extends Document {
   email?: string;
   userName: string;
   password?: string;
-  followers?: mongoose.Types.Array<mongoose.Types.ObjectId>;
-  following?: mongoose.Types.Array<mongoose.Types.ObjectId>;
+  followers?: mongoose.Types.Array<id>;
+  following?: mongoose.Types.Array<id>;
   followerCount?: number;
   followingCount?: number;
   profilePicUrl: string;
@@ -22,6 +24,12 @@ export interface IUser extends IUserSchema {
   fullName: string;
   follow: (userName: string) => Promise<boolean>;
   unfollow: (userName: string) => Promise<boolean>;
+}
+
+// @ts-ignore
+export interface IUser_Populated extends IUser {
+  followers?: mongoose.Types.Array<IUser>;
+  following?: mongoose.Types.Array<IUser>;
 }
 
 export interface IUserModel extends Model<IUser> {}
@@ -122,7 +130,10 @@ userSchema.pre<IUser>("save", async function (next) {
     this.followingCount = this.following?.length || 0;
 });
 
-userSchema.methods.follow = async function (this: IUser, userName: string) {
+userSchema.methods.follow = async function (
+  this: IUser_Populated,
+  userName: string
+) {
   const user = this;
   const userToFollow = await User.findOne({ userName }).select("+followers");
   if (user) {
@@ -131,9 +142,13 @@ userSchema.methods.follow = async function (this: IUser, userName: string) {
     }
 
     if (user.following && userToFollow.followers) {
-      if (user.following.indexOf(userToFollow._id) !== -1) {
+      if (
+        user.following.findIndex(
+          (u) => String(u._id) === String(userToFollow._id)
+        ) != -1
+      )
         return false;
-      }
+
       user.following.push(userToFollow._id);
       userToFollow.followers.push(user._id);
 
@@ -146,7 +161,10 @@ userSchema.methods.follow = async function (this: IUser, userName: string) {
   return false;
 };
 
-userSchema.methods.unfollow = async function (this: IUser, userName: string) {
+userSchema.methods.unfollow = async function (
+  this: IUser_Populated,
+  userName: string
+) {
   const user = this;
   const userToFollow = await User.findOne({ userName }).select("+followers");
   if (user) {
@@ -154,9 +172,12 @@ userSchema.methods.unfollow = async function (this: IUser, userName: string) {
       throw Error("The user you are trying to follow doesn't exist.");
     }
     if (user.following && userToFollow.followers) {
-      if (user.following.indexOf(userToFollow._id) === -1) {
+      if (
+        user.following.findIndex(
+          (u) => String(u._id) === String(userToFollow._id)
+        ) == -1
+      )
         return false;
-      }
       user.following.pull(userToFollow._id);
       userToFollow.followers.pull(user._id);
 

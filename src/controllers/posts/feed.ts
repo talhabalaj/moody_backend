@@ -14,7 +14,7 @@ export const feed = async (req: ExpressRequest, res: ExpressResponse) => {
   assert(req.user, "[feed] Should be called on a protected route");
 
   const { user } = req;
-  const { offset } = req.query;
+  const { offset, limit } = req.query;
   assert(user?.following, "[feed] following on user must exist");
 
   if (user && user.following) {
@@ -23,7 +23,7 @@ export const feed = async (req: ExpressRequest, res: ExpressResponse) => {
     })
       .sort({ createdAt: -1 })
       .skip(offset ? parseInt(<string>offset) : 0)
-      .limit(10)
+      .limit(limit ? parseInt(<string>limit) : 10)
       .populate("user")
       .populate("comments");
 

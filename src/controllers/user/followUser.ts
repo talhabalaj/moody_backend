@@ -33,11 +33,8 @@ export const unfollowUser = async (
   const { userName } = req.params;
 
   try {
-    const userToUnfollow = await User.findOne({ userName });
-    if (!userToUnfollow)
-      return createError(res, { code: 404, args: ["User not found"] });
-    let modified = false;
-    if (user) modified = await userToUnfollow.unfollow(user?.userName);
+    let modified = await user?.unfollow(userName);
+
     return createResponse(res, {
       status: 200,
       message: "Successfull",
