@@ -19,6 +19,7 @@ import { updateUser } from "../../controllers/user/updateUser";
 import { upload } from "../../middleware/update";
 import { createError } from "../../lib/errors";
 import { searchUser } from "../../controllers/user/searchUser";
+import { getNotifications } from "../../controllers/user/getNotifications";
 
 const userRouter = Router();
 
@@ -56,6 +57,13 @@ userRouter.put(
     });
   },
   updateUser
+);
+
+userRouter.get(
+  "/notifications",
+  authProvider,
+  protectedRoute,
+  getNotifications
 );
 
 export { userRouter };

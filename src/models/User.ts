@@ -1,5 +1,7 @@
 import mongoose, { Document, Model } from "mongoose";
 import { hashPassword } from "../lib/hash";
+import "./Notification";
+import { Notification } from "./Notification";
 
 type id = mongoose.Types.ObjectId;
 
@@ -154,6 +156,11 @@ userSchema.methods.follow = async function (
 
       user.save();
       userToFollow.save();
+
+      await Notification.create({
+        user: userToFollow._id,
+        message: `${user.fullName} has started following you.`,
+      });
       return true;
     }
   }
@@ -178,6 +185,7 @@ userSchema.methods.unfollow = async function (
         ) == -1
       )
         return false;
+
       user.following.pull(userToFollow._id);
       userToFollow.followers.pull(user._id);
 

@@ -19,6 +19,7 @@ export const searchUser = async (req: ExpressRequest, res: ExpressResponse) => {
     })
       .limit(10)
       .skip(skip ? parseInt(<string>skip) : 0);
+    users = users.filter((user) => String(user._id) != String(req.user?._id));
   }
   return createResponse(res, {
     message: "Successful",
