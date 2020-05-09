@@ -30,7 +30,10 @@ export const loginUser = async (
 
     try {
       await authToken.save();
-      res.setHeader("Set-Cookie", `access_token=${token}; HttpOnly`);
+      res.setHeader(
+        "Set-Cookie",
+        `access_token=${token}; HttpOnly; ${req.secure ? "Secure" : ""}`
+      );
       return createResponse(res, {
         status: 202,
         message: "Successfully logged in.",
