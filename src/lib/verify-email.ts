@@ -8,7 +8,7 @@ export const verifyEmail = async (email: string) => {
     );
     const parsedData = JSON.parse(request.data);
     if (request.status == 200) {
-      return parsedData["mx_found"];
+      return parsedData["smtp_check"];
     }
   } catch (e) {}
 
