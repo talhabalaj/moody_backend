@@ -26,7 +26,7 @@ export const registerUser = async (
     return createError(res, { code: 2001, args: [userName] });
   }
 
-  if (await verifyEmail(email)) {
+  if (!(await verifyEmail(email))) {
     return createError(res, { code: 2002, args: ["Email is not valid"] });
   }
 
