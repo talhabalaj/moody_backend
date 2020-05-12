@@ -8,11 +8,18 @@ export const createError = (
   { code, args = [] }: { code: number; args?: string[] }
 ) => {
   const find = errors.find((error) => error(args).code === code);
+  let error: WebServerResponseError;
   if (find) {
-    const error = find(args);
-    return res.status(error.status).json(error);
+    error = find(args);
+  } else {
+    error = {
+      type: "Error",
+      status: code,
+      code: code,
+      message: args && args[0] ? args[0] : "Operation not successful!",
+    };
   }
-  throw Error("Error code not found!");
+  return res.status(error.status).json(error);
 };
 
 export const errors: Array<errorArgs> = [

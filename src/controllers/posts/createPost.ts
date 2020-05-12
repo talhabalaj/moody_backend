@@ -49,6 +49,7 @@ export const createPost = async (req: ExpressRequest, res: ExpressResponse) => {
     // save to database
     let post = new Post({
       imageUrl: uploaded.secure_url,
+      imagePublicId: uploaded.public_id,
       user: req.user ? req.user._id : null,
       caption,
     });

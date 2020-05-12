@@ -1,4 +1,5 @@
 import assert from "assert";
+import cloudinary from "cloudinary";
 
 import { ExpressRequest } from "../../enhancements/ExpressRequest";
 import { ExpressResponse } from "../../enhancements/ExpressResponse";
@@ -11,11 +12,20 @@ export const deletePost = async (req: ExpressRequest, res: ExpressResponse) => {
 
   const { postId } = req.params;
 
-  const post = await Post.findByIdAndDelete(postId);
+  const post = await Post.findOneAndDelete({
+    user: req.user?._id,
+    _id: postId,
+  });
 
   if (post) {
+    cloudinary.v2.uploader
+      .destroy(post.imagePublicId)
+      .catch((e) => console.error(e));
     return createResponse(res, { status: 200, message: "Successful!" });
   } else {
-    return createError(res, { code: 404, args: ["Post not found!"] });
+    return createError(res, {
+      code: 404,
+      args: ["The post cannot be deleted."],
+    });
   }
 };
