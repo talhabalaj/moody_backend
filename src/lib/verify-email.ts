@@ -11,7 +11,9 @@ export const verifyEmail = async (email: string) => {
     if (request.status == 200) {
       return parsedData["smtp_check"];
     }
-  } catch (e) {}
+  } catch (e) {
+    console.error("Error:", e);
+  }
 
   return false;
 };
