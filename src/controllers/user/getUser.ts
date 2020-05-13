@@ -7,13 +7,13 @@ import { Post } from "../../models/Post";
 
 export const getUser = async (req: ExpressRequest, res: ExpressResponse) => {
   let { user } = req;
-  const { userName } = req.params;
+  const { id } = req.params;
 
   let userToGet: IUser | undefined = user;
 
-  if (userName)
+  if (id)
     userToGet =
-      (await User.findOne({ userName })
+      (await User.findById(id)
         .select("+followerCount +followingCount +bio +followers +following")
         .populate("followers")
         .populate("following")) || undefined;

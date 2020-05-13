@@ -9,10 +9,10 @@ export const followUser = async (req: ExpressRequest, res: ExpressResponse) => {
   const { user } = req;
   assert(user, "[followUser] requires req.user to exist");
 
-  const { userName } = req.params;
+  const { id } = req.params;
 
   try {
-    const modified = await user?.follow(userName);
+    const modified = await user?.follow(id);
     return createResponse(res, {
       status: 200,
       message: "Successfull",
@@ -30,10 +30,10 @@ export const unfollowUser = async (
   const { user } = req;
   assert(user, "[unfollowUser] requires req.user to exist");
 
-  const { userName } = req.params;
+  const { id } = req.params;
 
   try {
-    let modified = await user?.unfollow(userName);
+    let modified = await user?.unfollow(id);
 
     return createResponse(res, {
       status: 200,

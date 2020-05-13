@@ -24,8 +24,8 @@ interface IUserSchema extends Document {
 
 export interface IUser extends IUserSchema {
   fullName: string;
-  follow: (userName: string) => Promise<boolean>;
-  unfollow: (userName: string) => Promise<boolean>;
+  follow: (id: string) => Promise<boolean>;
+  unfollow: (id: string) => Promise<boolean>;
 }
 
 // @ts-ignore
@@ -132,12 +132,9 @@ userSchema.pre<IUser>("save", async function (next) {
     this.followingCount = this.following?.length || 0;
 });
 
-userSchema.methods.follow = async function (
-  this: IUser_Populated,
-  userName: string
-) {
+userSchema.methods.follow = async function (this: IUser_Populated, id: string) {
   const user = this;
-  const userToFollow = await User.findOne({ userName }).select("+followers");
+  const userToFollow = await User.findById(id).select("+followers");
   if (user) {
     if (!userToFollow) {
       throw Error("The user you are trying to follow doesn't exist.");
@@ -170,10 +167,10 @@ userSchema.methods.follow = async function (
 
 userSchema.methods.unfollow = async function (
   this: IUser_Populated,
-  userName: string
+  id: string
 ) {
   const user = this;
-  const userToFollow = await User.findOne({ userName }).select("+followers");
+  const userToFollow = await User.findById(id).select("+followers");
   if (user) {
     if (!userToFollow) {
       throw Error("The user you are trying to follow doesn't exist.");

@@ -11,7 +11,9 @@ export const getNotifications = async (
 ) => {
   assert("[getNotifications] requires req.user");
   const user: IUser_Populated = req.user as IUser_Populated;
-  const notifications = await Notification.find({ user: user._id });
+  const notifications = await Notification.find({ user: user._id }).sort({
+    createdAt: -1,
+  });
 
   return createResponse(res, {
     message: "Successful!",

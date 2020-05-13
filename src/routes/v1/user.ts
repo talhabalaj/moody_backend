@@ -30,15 +30,10 @@ userRouter.post("/check-email", authProvider, loginRegisterLock, checkEmail);
 userRouter.post("/login", authProvider, loginRegisterLock, loginUser);
 
 userRouter.get("/logout", authProvider, protectedRoute, logoutUser);
-userRouter.get("/profile/:userName?", authProvider, protectedRoute, getUser);
+userRouter.get("/profile/:id?", authProvider, protectedRoute, getUser);
+userRouter.get("/profile/:id/follow", authProvider, protectedRoute, followUser);
 userRouter.get(
-  "/profile/:userName/follow",
-  authProvider,
-  protectedRoute,
-  followUser
-);
-userRouter.get(
-  "/profile/:userName/unfollow",
+  "/profile/:id/unfollow",
   authProvider,
   protectedRoute,
   unfollowUser
