@@ -11,24 +11,25 @@ export const getUserPosts = async (
   res: ExpressResponse
 ) => {
   const { user } = req;
-  const { userName } = req.params;
+  const { id } = req.params;
   const { offset = "0" } = req.query;
 
   assert(req.user, "[getUserPosts] requires req.user");
 
   let userId = user?._id;
 
-  if (userName) {
-    let user = await User.findOne({ userName: userName });
+  if (id) {
+    let user = await User.findById(id);
     if (user) {
       userId = user._id;
     } else {
       return createError(res, {
         code: 404,
-        args: ["Username doesn't match with any existing account."],
+        args: ["This user doesn't match with any existing account."],
       });
     }
   }
+
   let posts = await Post.find({ user: userId })
     .populate("comments")
     .populate("user")
