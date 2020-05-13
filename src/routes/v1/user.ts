@@ -55,7 +55,7 @@ userRouter.put(
   updateUser
 );
 
-userRouter.get("/posts/:id?", authProvider, protectedRoute, getUserPosts);
+userRouter.get("/:id?/posts", authProvider, protectedRoute, getUserPosts);
 
 userRouter.get(
   "/notifications",
