@@ -25,7 +25,13 @@ export const feed = async (req: ExpressRequest, res: ExpressResponse) => {
       .skip(offset ? parseInt(<string>offset) : 0)
       .limit(limit ? parseInt(<string>limit) : 10)
       .populate("user")
-      .populate("comments");
+      .populate({
+        path: "comments",
+        populate: {
+          path: "user",
+          model: "User",
+        },
+      });
 
     return createResponse(res, {
       status: 200,
