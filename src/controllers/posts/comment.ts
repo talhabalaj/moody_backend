@@ -33,9 +33,10 @@ export const createComment = async (
       <string>message,
       replyOfId
     );
+
     return createResponse(res, {
       status: 200,
-      data: { comment },
+      data: { comment: await Comment.findById(comment._id).populate("user") },
       message: "Successful",
     });
   }

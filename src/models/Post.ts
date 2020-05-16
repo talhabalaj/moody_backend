@@ -102,6 +102,7 @@ postSchema.methods.comment = async function (
     user,
     post: this._id,
     replyOf: replyOf ? replyOf : null,
+    message: comment,
   });
   this.comments.push(newComment._id);
   this.save();
