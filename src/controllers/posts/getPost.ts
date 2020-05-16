@@ -10,7 +10,13 @@ export const getPost = async (req: ExpressRequest, res: ExpressResponse) => {
   try {
     const post = await Post.findById(postId)
       .populate("user")
-      .populate("comments");
+      .populate({
+        path: "comments",
+        populate: {
+          path: "user",
+          model: "User",
+        },
+      });
 
     if (post) {
       return createResponse(res, {
