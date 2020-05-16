@@ -8,7 +8,10 @@ export const getPost = async (req: ExpressRequest, res: ExpressResponse) => {
   const { postId } = req.params;
 
   try {
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId)
+      .populate("user")
+      .populate("comments");
+
     if (post) {
       return createResponse(res, {
         status: 200,
