@@ -7,11 +7,11 @@ import { createResponse } from "../../lib/response";
 import { createError } from "../../lib/errors";
 
 export const updateUser = async (req: ExpressRequest, res: ExpressResponse) => {
-  const { phoneNumber, firstName, lastName } = req.body;
+  const { bio, firstName, lastName } = req.body;
   const { file } = req;
   const fieldsToUpdate: any = {};
 
-  if (phoneNumber) fieldsToUpdate.phoneNumber = phoneNumber;
+  if (bio) fieldsToUpdate.bio = bio;
   if (firstName) fieldsToUpdate.firstName = firstName;
   if (lastName) fieldsToUpdate.lastName = lastName;
   if (file) {
