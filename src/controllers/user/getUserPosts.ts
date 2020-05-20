@@ -31,7 +31,13 @@ export const getUserPosts = async (
   }
 
   let posts = await Post.find({ user: userId })
-    .populate("comments")
+    .populate({
+        path: "comments",
+        populate: {
+          path: "user",
+          model: "User",
+        },
+      })
     .populate("user")
     .sort({ createdAt: -1 })
     .skip(parseInt(<string>offset))
