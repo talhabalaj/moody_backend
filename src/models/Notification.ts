@@ -44,10 +44,12 @@ export const notificationSchema = new mongoose.Schema<INotification>(
     post: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Post",
+      default: null,
     },
     comment: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Comment",
+      default: null,
     },
     read: {
       type: Boolean,
