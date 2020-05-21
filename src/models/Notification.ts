@@ -1,11 +1,24 @@
 import mongoose, { Document, Model } from "mongoose";
 
 import "./User";
+import "./Post";
+
 import { IUser } from "./User";
+import { IPost } from "./Post";
+import { IComment } from "./Comment";
+
+export enum UserNotificationType {
+  POST_LIKED,
+  POST_COMMENTED,
+  USER_FOLLOWED,
+}
 
 interface INotificationSchema extends Document {
-  user: IUser["_id"];
-  message: string;
+  from: IUser["_id"];
+  for: IUser["_id"];
+  type: UserNotificationType;
+  post?: IPost["_id"];
+  comment?: IComment["_id"];
   read: boolean;
 }
 
@@ -14,14 +27,27 @@ export interface INotificationModel extends Model<INotification> {}
 
 export const notificationSchema = new mongoose.Schema<INotification>(
   {
-    user: {
+    from: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    message: {
-      type: String,
+    for: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
+    },
+    type: {
+      type: Number,
+      required: true,
+    },
+    post: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Post",
+    },
+    comment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
     },
     read: {
       type: Boolean,

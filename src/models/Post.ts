@@ -1,6 +1,7 @@
 import mongoose, { Document, Model } from "mongoose";
 import { IUser } from "./User";
 import { IComment, Comment } from "./Comment";
+import { Notification, UserNotificationType } from "./Notification";
 import "./Comment";
 import "./User";
 
@@ -74,6 +75,12 @@ postSchema.methods.like = async function (
 ) {
   if (this.likes.indexOf(userId) == -1) {
     this.likes.push(userId);
+    await Notification.create({
+      for: this.user,
+      from: userId,
+      post: this._id,
+      type: UserNotificationType.POST_LIKED,
+    });
     this.save();
     return true;
   }
@@ -87,6 +94,12 @@ postSchema.methods.unlike = async function (
   if (this.likes.indexOf(userId) != -1) {
     this.likes.pull(userId);
     this.save();
+    await Notification.findOneAndDelete({
+      for: this.user,
+      from: userId,
+      post: this._id,
+      type: UserNotificationType.POST_LIKED,
+    });
     return true;
   }
   return false;
@@ -105,6 +118,13 @@ postSchema.methods.comment = async function (
     message: comment,
   });
   this.comments.push(newComment._id);
+  await Notification.create({
+    for: this.user,
+    from: user,
+    post: this._id,
+    type: UserNotificationType.POST_COMMENTED,
+    comment: newComment._id,
+  });
   this.save();
 
   return newComment;
@@ -117,6 +137,13 @@ postSchema.methods.deleteComment = async function (
   const comment = await Comment.findByIdAndDelete(commentId);
   if (comment) {
     this.comments.pull(commentId);
+    await Notification.findOneAndDelete({
+      for: this.user,
+      from: comment.user,
+      post: this._id,
+      type: UserNotificationType.POST_COMMENTED,
+      comment: comment._id,
+    });
     this.save();
     return true;
   }

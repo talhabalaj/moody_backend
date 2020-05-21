@@ -1,7 +1,7 @@
 import mongoose, { Document, Model } from "mongoose";
 import { hashPassword } from "../lib/hash";
 import "./Notification";
-import { Notification } from "./Notification";
+import { Notification, UserNotificationType } from "./Notification";
 
 type id = mongoose.Types.ObjectId;
 
@@ -155,8 +155,9 @@ userSchema.methods.follow = async function (this: IUser_Populated, id: string) {
       userToFollow.save();
 
       await Notification.create({
-        user: userToFollow._id,
-        message: `${user.fullName} has started following you.`,
+        from: user._id,
+        for: userToFollow._id,
+        type: UserNotificationType.USER_FOLLOWED,
       });
       return true;
     }
@@ -188,6 +189,11 @@ userSchema.methods.unfollow = async function (
 
       user.save();
       userToFollow.save();
+      await Notification.findOneAndDelete({
+        from: user._id,
+        for: userToFollow._id,
+        type: UserNotificationType.USER_FOLLOWED,
+      });
       return true;
     }
   }
