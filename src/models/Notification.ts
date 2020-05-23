@@ -65,8 +65,8 @@ export const notificationSchema = new mongoose.Schema<INotification>(
   { timestamps: true }
 );
 
-notificationSchema.post("find", async function (doc) {
-  await doc.update({ softRead: true });
+notificationSchema.post("find", async function (docs) {
+  console.log(docs);
 });
 
 export const Notification = mongoose.model<INotification, INotificationModel>(
