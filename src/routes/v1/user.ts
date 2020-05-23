@@ -74,6 +74,7 @@ userRouter.get(
   protectedRoute,
   markNotificationRead
 );
+
 userRouter.post(
   "/notifications/seen",
   authProvider,

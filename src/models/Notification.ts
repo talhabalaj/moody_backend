@@ -7,6 +7,8 @@ import { IUser } from "./User";
 import { IPost } from "./Post";
 import { IComment } from "./Comment";
 import { text } from "express";
+import { firebaseApp } from "../lib/firebase";
+import { buildNotification } from "../lib/notificationBuilder";
 
 export enum UserNotificationType {
   POST_LIKED,
@@ -64,6 +66,13 @@ export const notificationSchema = new mongoose.Schema<INotification>(
   },
   { timestamps: true }
 );
+
+notificationSchema.post("save", async function (doc) {
+  const notification = doc as INotification;
+  firebaseApp.messaging().sendToTopic(String(notification.for), {
+    notification: await buildNotification(notification),
+  });
+});
 
 export const Notification = mongoose.model<INotification, INotificationModel>(
   "Notification",
