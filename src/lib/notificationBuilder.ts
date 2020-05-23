@@ -18,7 +18,7 @@ export const buildNotification = async (
       body = `${user?.userName || "A user"} liked your post.`;
       break;
     case UserNotificationType.USER_FOLLOWED:
-      body = `${user?.userName || "A user"} followed your post.`;
+      body = `${user?.userName || "A user"} started following you.`;
       break;
     default:
       body = `${user?.userName || "A user"} performed a unknown activity.`;
