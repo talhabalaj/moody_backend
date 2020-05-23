@@ -12,16 +12,16 @@ export const buildNotification = async (
 
   switch (notification.type) {
     case UserNotificationType.POST_COMMENTED:
-      body = `${notification.for} commented on your post.`;
+      body = `${user?.userName || "A user"} commented on your post.`;
       break;
     case UserNotificationType.POST_LIKED:
-      body = `${notification.for} liked your post.`;
+      body = `${user?.userName || "A user"} liked your post.`;
       break;
     case UserNotificationType.USER_FOLLOWED:
-      body = `${notification.for} followed your post.`;
+      body = `${user?.userName || "A user"} followed your post.`;
       break;
     default:
-      body = `${notification.for} performed a unknown activity.`;
+      body = `${user?.userName || "A user"} performed a unknown activity.`;
       break;
   }
 
