@@ -6,6 +6,7 @@ import "./Post";
 import { IUser } from "./User";
 import { IPost } from "./Post";
 import { IComment } from "./Comment";
+import { text } from "express";
 
 export enum UserNotificationType {
   POST_LIKED,
@@ -20,6 +21,7 @@ interface INotificationSchema extends Document {
   post?: IPost["_id"];
   comment?: IComment["_id"];
   read: boolean;
+  softRead: boolean;
 }
 
 export interface INotification extends INotificationSchema {}
@@ -55,9 +57,17 @@ export const notificationSchema = new mongoose.Schema<INotification>(
       type: Boolean,
       default: false,
     },
+    softRead: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
+
+notificationSchema.post("find", async function (doc) {
+  await doc.update({ softRead: true });
+});
 
 export const Notification = mongoose.model<INotification, INotificationModel>(
   "Notification",
