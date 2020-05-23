@@ -65,11 +65,6 @@ export const notificationSchema = new mongoose.Schema<INotification>(
   { timestamps: true }
 );
 
-notificationSchema.post("find", async function (docs: any) {
-  const idsSent: number[] = docs.map((doc: INotification) => doc._id);
-  await Notification.updateMany({ _id: { $in: idsSent } }, { softRead: true });
-});
-
 export const Notification = mongoose.model<INotification, INotificationModel>(
   "Notification",
   notificationSchema

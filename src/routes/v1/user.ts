@@ -21,7 +21,10 @@ import { createError } from "../../lib/errors";
 import { searchUser } from "../../controllers/user/searchUser";
 import { getNotifications } from "../../controllers/user/getNotifications";
 import { getUserPosts } from "../../controllers/user/getUserPosts";
-import { markNotificationRead } from "../../controllers/user/readNotification";
+import {
+  markNotificationRead,
+  markNotificationSoftRead,
+} from "../../controllers/user/readNotification";
 
 const userRouter = Router();
 
@@ -70,6 +73,12 @@ userRouter.get(
   authProvider,
   protectedRoute,
   markNotificationRead
+);
+userRouter.get(
+  "/notifications/seen",
+  authProvider,
+  protectedRoute,
+  markNotificationSoftRead
 );
 
 export { userRouter };

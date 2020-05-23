@@ -5,6 +5,8 @@ import { IUser_Populated } from "../../models/User";
 import { Notification } from "../../models/Notification";
 import assert from "assert";
 import { createError } from "../../lib/errors";
+import { Types, isValidObjectId } from "mongoose";
+import { isArray } from "util";
 
 export const markNotificationRead = async (
   req: ExpressRequest,
@@ -28,5 +30,32 @@ export const markNotificationRead = async (
       code: 404,
       args: ["Notification wasn't found."],
     });
+  }
+};
+
+export const markNotificationSoftRead = async (
+  req: ExpressRequest,
+  res: ExpressResponse
+) => {
+  assert("[markNotificationRead] requires req.user");
+  const { ids } = req.body;
+  if (ids && isArray(ids) && ids.length > 0) {
+    const objectIds = ids.filter((id: string) => isValidObjectId(id));
+
+    const filterdIdsforCurrentUser = await Notification.find({
+      _id: { $in: objectIds },
+    });
+
+    await Notification.updateMany(
+      { _id: { $in: filterdIdsforCurrentUser } },
+      { softRead: true }
+    );
+
+    return createResponse(res, {
+      message: "Successful!",
+      status: 200,
+    });
+  } else {
+    return createError(res, { code: 400 });
   }
 };
