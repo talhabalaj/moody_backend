@@ -4,6 +4,7 @@ import { createError } from "../../lib/errors";
 import assert from "assert";
 import { Post } from "../../models/Post";
 import { Comment } from "../../models/Comment";
+import { Notification } from "../../models/Notification";
 import { Types } from "mongoose";
 import { createResponse } from "../../lib/response";
 
@@ -74,6 +75,13 @@ export const deleteComment = async (
         // remove comment reference in post
         post.comments.pull(comment._id);
         await post.save();
+
+        // Delete notifications
+        await Notification.deleteMany({
+          comment: {
+            $in: [...(<Types.ObjectId[]>comment.replies), comment._id],
+          },
+        });
 
         // finally delete the comment
         await comment.remove();
