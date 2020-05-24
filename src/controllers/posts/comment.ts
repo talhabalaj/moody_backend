@@ -47,7 +47,7 @@ export const createComment = async (
   });
 };
 
-export const deleteComments = async (
+export const deleteComment = async (
   req: ExpressRequest,
   res: ExpressResponse
 ) => {

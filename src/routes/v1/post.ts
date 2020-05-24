@@ -7,7 +7,7 @@ import { getPost } from "../../controllers/posts/getPost";
 import { upload } from "../../middleware/update";
 import { unLike, likePost } from "../../controllers/posts/likePost";
 import { deletePost } from "../../controllers/posts/deletePost";
-import { createComment } from "../../controllers/posts/comment";
+import { createComment, deleteComment } from "../../controllers/posts/comment";
 
 const postsRouter = Router();
 
@@ -36,6 +36,12 @@ postsRouter.post(
   authProvider,
   protectedRoute,
   createComment
+);
+postsRouter.delete(
+  "/:postId/comment/:commentId",
+  authProvider,
+  protectedRoute,
+  deleteComment
 );
 
 export { postsRouter };
