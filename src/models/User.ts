@@ -135,7 +135,7 @@ userSchema.pre<IUser>("save", async function (next) {
 userSchema.methods.follow = async function (this: IUser_Populated, id: string) {
   const user = this;
   const userToFollow = await User.findById(id).select("+followers");
-  if (user) {
+  if (user && String(user._id) != String(id)) {
     if (!userToFollow) {
       throw Error("The user you are trying to follow doesn't exist.");
     }

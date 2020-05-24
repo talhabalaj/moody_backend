@@ -75,12 +75,13 @@ postSchema.methods.like = async function (
 ) {
   if (this.likes.indexOf(userId) == -1) {
     this.likes.push(userId);
-    await Notification.create({
-      for: this.user,
-      from: userId,
-      post: this._id,
-      type: UserNotificationType.POST_LIKED,
-    });
+    if (String(userId) != String(this.user))
+      await Notification.create({
+        for: this.user,
+        from: userId,
+        post: this._id,
+        type: UserNotificationType.POST_LIKED,
+      });
     this.save();
     return true;
   }
@@ -118,13 +119,16 @@ postSchema.methods.comment = async function (
     message: comment,
   });
   this.comments.push(newComment._id);
-  await Notification.create({
-    for: this.user,
-    from: user,
-    post: this._id,
-    type: UserNotificationType.POST_COMMENTED,
-    comment: newComment._id,
-  });
+
+  if (String(user) != String(this.user))
+    await Notification.create({
+      for: this.user,
+      from: user,
+      post: this._id,
+      type: UserNotificationType.POST_COMMENTED,
+      comment: newComment._id,
+    });
+
   this.save();
 
   return newComment;
