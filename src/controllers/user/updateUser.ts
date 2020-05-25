@@ -22,7 +22,15 @@ export const updateUser = async (req: ExpressRequest, res: ExpressResponse) => {
       parser.format(req.file.originalname, req.file.buffer).content
     );
 
-    const uploaded = await cloudinary.v2.uploader.upload(file);
+    const uploaded = await cloudinary.v2.uploader.upload(file, {
+      transformation: {
+        transformation: {
+          height: 1080,
+          quality: "auto:best",
+          crop: "scale",
+        },
+      },
+    });
     fieldsToUpdate.profilePicUrl = uploaded.secure_url;
   }
 
