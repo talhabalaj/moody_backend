@@ -28,15 +28,13 @@ ConversationSchema.methods.sendMessage = async function (
   message: string,
   from: mongoose.Types.ObjectId
 ) {
-  const messageModel = (
-    await Message.create({
-      from,
-      content: message,
-      conversation: this._id,
-    })
-  )
-    .populate("conversation")
-    .populate("from");
+  let messageModel = await Message.create({
+    from,
+    content: message,
+    conversation: this._id,
+  });
+
+  messageModel = messageModel.populate("conversation").populate("from");
 
   // TODO: notification
 
