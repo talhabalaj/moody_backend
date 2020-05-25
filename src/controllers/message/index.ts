@@ -17,9 +17,13 @@ export const createConvo = async (
   const recUser = await User.findById(to);
 
   if (recUser) {
-    const conversation = await Conversation.create({
-      members: [req.user?._id, recUser._id],
+    let conversation = await Conversation.findOne({
+      members: { $elemMatch: { $in: [to, req.user?.id] } },
     });
+    if (!conversation)
+      conversation = await Conversation.create({
+        members: [req.user?._id, recUser._id],
+      });
 
     return createResponse(res, {
       status: 200,
