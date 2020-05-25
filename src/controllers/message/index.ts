@@ -70,7 +70,8 @@ export const getMessages = async (
         path: "members",
         model: "User",
       },
-    });
+    })
+    .populate("from");
 
   return createResponse(res, {
     status: 200,
