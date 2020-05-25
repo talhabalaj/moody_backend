@@ -57,17 +57,19 @@
       var socket = io({
         query: {
           token:
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlYmMxNWNiZTNmMDQ5MDAyMTQ3MTdlYiIsImlhdCI6MTU5MDMxNTAyMywiZXhwIjoxNTkwMzQ1MDIzfQ.jRwFLtO9mUaBtIEZVhyT3psspI6a1HA_5HwGPRXex9g",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlYmMxNWNiZTNmMDQ5MDAyMTQ3MTdlYiIsImlhdCI6MTU5MDQwMTQ1MCwiZXhwIjoxNTkwNDMxNDUwfQ.Q-OTju3wwlE_ucVP6B8eGFEyr8-Qm8ro17ldXzxc1A0",
+          conversation: "5ecb9b63169b33877efaff5e",
         },
       });
       $(function () {
+        console.log(socket.connected);
         $("form").submit(function () {
           socket.emit("message", $("#m").val());
           $("#m").val("");
           return false;
         });
         socket.on("message", function (msg) {
-          $("#messages").append($("<li>").text(msg));
+          $("#messages").append($("<li>").text(JSON.stringify(msg)));
           window.scrollTo(0, document.body.scrollHeight);
         });
       });
