@@ -19,11 +19,13 @@ export const createConvo = async (
   if (recUser) {
     let conversation = await Conversation.findOne({
       members: { $elemMatch: { $in: [to, req.user?.id] } },
-    });
+    }).populate("members");
     if (!conversation)
-      conversation = await Conversation.create({
-        members: [req.user?._id, recUser._id],
-      });
+      conversation = (
+        await Conversation.create({
+          members: [req.user?._id, recUser._id],
+        })
+      ).populate("members");
 
     return createResponse(res, {
       status: 200,
