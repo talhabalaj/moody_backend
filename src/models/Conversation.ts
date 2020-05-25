@@ -34,11 +34,13 @@ ConversationSchema.methods.sendMessage = async function (
     conversation: this._id,
   });
 
-  messageModel = messageModel.populate("conversation").populate("from");
+  const newMessageModel = await Message.findById(messageModel._id)
+    .populate("conversation")
+    .populate("from");
 
   // TODO: notification
 
-  return messageModel;
+  return <IMessage>newMessageModel;
 };
 
 export const Conversation = mongoose.model<IConversation, IConversationModel>(
