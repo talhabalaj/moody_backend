@@ -24,8 +24,7 @@ const corsMiddleware: any = cors({ credentials: true, origin });
 app.use(helmet() as any);
 
 // Socket
-io.use(socketAuthHandler);
-io.on("connection", socketListener);
+io.use(socketAuthHandler).on("connection", socketListener);
 
 // CORS
 app.options(corsMiddleware);
