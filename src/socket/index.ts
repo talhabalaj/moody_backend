@@ -9,7 +9,6 @@ export function socketListener(socket: Socket) {
   const currentRoom = socket.nsp.to(conversation._id);
 
   socket.on("message", async (msg) => {
-    console.log(`message from ${socket.request.user.userName}:` + msg);
     const message = await conversation.sendMessage(msg, user._id);
     currentRoom.emit("message", JSON.stringify(message));
   });

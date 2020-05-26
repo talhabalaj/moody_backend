@@ -62,6 +62,7 @@ export const getMessages = async (
   const offset = !!req.query.offset ? +req.query.offset : 0;
 
   const messages = await Message.find({ conversation: conversationId })
+    .sort({ createdAt: -1 })
     .skip(offset)
     .limit(10)
     .populate({
