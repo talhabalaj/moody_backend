@@ -50,6 +50,8 @@ ConversationSchema.methods.sendMessage = async function (
 
   (async () => {
     const to: string = this.members.find((e) => String(e) != String(from));
+    console.log(to);
+    console.log(this.members);
     const user = await User.findById(from);
 
     if (user) {
