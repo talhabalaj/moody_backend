@@ -44,7 +44,16 @@ export const getConversations = async (
   assert(req.user, "[getConversations] requires req.user");
   const conversations = await Conversation.find({
     members: { $elemMatch: { $eq: req.user?._id } },
-  }).populate("members");
+  })
+    .populate("members")
+    .populate({
+      path: "messages",
+      populate: {
+        path: "from",
+        model: "User",
+      },
+    })
+    .sort({ updatedAt: -1 });
 
   return createResponse(res, {
     status: 200,
@@ -65,13 +74,6 @@ export const getMessages = async (
     .sort({ createdAt: -1 })
     .skip(offset)
     .limit(10)
-    .populate({
-      path: "conversation",
-      populate: {
-        path: "members",
-        model: "User",
-      },
-    })
     .populate("from");
 
   return createResponse(res, {
