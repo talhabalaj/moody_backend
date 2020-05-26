@@ -1,7 +1,9 @@
 import mongoose, { Document, Model } from "mongoose";
 import "./User";
 import { IMessage, Message } from "./Message";
-import { IUser } from "./User";
+import { IUser, User } from "./User";
+import { Notification } from "./Notification";
+import { firebaseApp } from "../lib/firebase";
 
 interface IConversationSchema extends Document {
   members: mongoose.Types.Array<IUser["_id"]>;
@@ -46,7 +48,19 @@ ConversationSchema.methods.sendMessage = async function (
     "from"
   );
 
-  // TODO: notification
+  (async () => {
+    const to: string = this.members.find((e) => String(e) != String(from));
+    const user = await User.findById(from);
+
+    if (user) {
+      firebaseApp.messaging().sendToTopic(to, {
+        notification: {
+          title: `${user.userName}`,
+          body: `${message}`,
+        },
+      });
+    }
+  })();
 
   return <IMessage>newMessageModel;
 };
