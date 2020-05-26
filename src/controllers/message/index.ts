@@ -48,6 +48,10 @@ export const getConversations = async (
     .populate("members")
     .populate({
       path: "messages",
+      options: {
+        limit: 1,
+        sort: { createdAt: -1 },
+      },
       populate: {
         path: "from",
         model: "User",
