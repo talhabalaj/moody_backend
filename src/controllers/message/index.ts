@@ -77,7 +77,7 @@ export const getMessages = async (
   const messages = await Message.find({ conversation: conversationId })
     .sort({ createdAt: -1 })
     .skip(offset)
-    .limit(10)
+    .limit(20)
     .populate("from");
 
   return createResponse(res, {
