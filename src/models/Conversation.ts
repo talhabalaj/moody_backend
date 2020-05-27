@@ -58,6 +58,10 @@ ConversationSchema.methods.sendMessage = async function (
           title: `${user.userName}`,
           body: `${message}`,
         },
+        data: {
+          click_action: "FLUTTER_NOTIFICATION_CLICK",
+          conversation_id: this._id,
+        },
       });
     }
   })();
