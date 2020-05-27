@@ -60,7 +60,7 @@ ConversationSchema.methods.sendMessage = async function (
         },
         data: {
           click_action: "FLUTTER_NOTIFICATION_CLICK",
-          conversation_id: this._id,
+          conversation_id: String(this._id),
         },
       });
     }
