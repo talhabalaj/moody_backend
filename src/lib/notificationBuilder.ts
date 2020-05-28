@@ -14,15 +14,18 @@ export const buildNotification = async (
   switch (notification.type) {
     case UserNotificationType.POST_COMMENTED:
       body = `${user?.userName || "A user"} commented on your post.`;
-      args = { post_id: notification.post, comment_id: notification.comment };
+      args = {
+        post_id: String(notification.post),
+        comment_id: String(notification.comment),
+      };
       break;
     case UserNotificationType.POST_LIKED:
       body = `${user?.userName || "A user"} liked your post.`;
-      args = { post_id: notification.post };
+      args = { post_id: String(notification.post) };
       break;
     case UserNotificationType.USER_FOLLOWED:
       body = `${user?.userName || "A user"} started following you.`;
-      args = { user_id: user?._id };
+      args = { user_id: String(user?._id) };
       break;
     default:
       body = `${user?.userName || "A user"} performed a unknown activity.`;
