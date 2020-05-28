@@ -69,9 +69,12 @@ export const notificationSchema = new mongoose.Schema<INotification>(
 
 notificationSchema.post(/(create|save)/g, async function (doc) {
   const notification = doc as INotification;
-  firebaseApp.messaging().sendToTopic(String(notification.for), {
-    notification: await buildNotification(notification),
-  });
+  firebaseApp
+    .messaging()
+    .sendToTopic(
+      String(notification.for),
+      await buildNotification(notification)
+    );
 });
 
 export const Notification = mongoose.model<INotification, INotificationModel>(
