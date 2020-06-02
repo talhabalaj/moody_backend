@@ -1,6 +1,7 @@
 import { Socket } from "socket.io";
 import { IConversation } from "../models/Conversation";
 import { IUser } from "../models/User";
+import { Message } from "../models/Message";
 
 interface SendMessage {
   message: string;
@@ -18,6 +19,17 @@ export function socketListener(socket: Socket) {
     currentRoom.emit(
       "message",
       JSON.stringify({ uniqueId: msg.uniqueId, message })
+    );
+  });
+
+  socket.on("message_seen", async (data: { messageIds: [string] }) => {
+    const updated = await Message.updateMany(
+      { _id: { $in: data.messageIds }, from: { $not: user._id } },
+      { delivered: true }
+    );
+    currentRoom.emit(
+      "message_seen",
+      JSON.stringify({ messageIds: data.messageIds, updated })
     );
   });
 }
