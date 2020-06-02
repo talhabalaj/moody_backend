@@ -18,7 +18,7 @@ export const registerUser = async (
     lastName,
   } = req.body;
 
-  //return createError(res, { code: 500, args: ["Registerations are locked."] });
+  return createError(res, { code: 500, args: ["Registerations are locked."] });
 
   if (await User.exists({ email })) {
     return createError(res, { code: 2000, args: [email] });
