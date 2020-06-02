@@ -18,7 +18,7 @@ export const createConvo = async (
 
   if (recUser) {
     let conversation = await Conversation.findOne({
-      members: [to, req.user?.id],
+      members: { $all: [req.user?._id, to] },
     }).populate("members");
     if (!conversation)
       conversation = (
