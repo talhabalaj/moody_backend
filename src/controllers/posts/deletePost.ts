@@ -7,6 +7,7 @@ import { createError } from "../../lib/errors";
 import { Post } from "../../models/Post";
 import { Comment } from "../../models/Comment";
 import { createResponse } from "../../lib/response";
+import { Notification } from "../../models/Notification";
 
 export const deletePost = async (req: ExpressRequest, res: ExpressResponse) => {
   assert(req.user, "[deletePost] Should be routed with authenticated route.");
@@ -29,6 +30,9 @@ export const deletePost = async (req: ExpressRequest, res: ExpressResponse) => {
     for (const comment of comments) {
       comment.remove().catch((e) => console.error(e));
     }
+
+    // Delete notifications
+    await Notification.deleteMany({ post: post._id });
 
     return createResponse(res, { status: 200, message: "Successful!" });
   } else {
