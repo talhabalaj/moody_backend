@@ -18,7 +18,7 @@ export const createConvo = async (
 
   if (recUser) {
     let conversation = await Conversation.findOne({
-      members: { $elemMatch: { $in: [to, req.user?.id] } },
+      members: [to, req.user?.id],
     }).populate("members");
     if (!conversation)
       conversation = (
