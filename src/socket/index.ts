@@ -24,8 +24,8 @@ export function socketListener(socket: Socket) {
 
   socket.on("message_seen", async (data: { messageIds: [string] }) => {
     const updated = await Message.updateMany(
-      { _id: { $in: data.messageIds }, from: { $not: user._id } },
-      { delivered: true }
+      { _id: { $in: data.messageIds } },
+      { seen: true }
     );
     currentRoom.emit(
       "message_seen",
