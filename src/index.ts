@@ -5,6 +5,7 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import socket from "socket.io";
 import { createServer } from "http";
+import morgan from "morgan";
 
 import { mainRouter } from "./routes/v1";
 import { port, origin } from "./config";
@@ -21,7 +22,8 @@ const io = socket(server);
 const corsMiddleware: any = cors({ credentials: true, origin });
 
 // Middleware
-app.use(helmet() as any);
+app.use(helmet());
+app.use(morgan("combined"));
 
 // Socket
 io.use(socketAuthHandler).on("connection", socketListener);
@@ -30,7 +32,7 @@ io.use(socketAuthHandler).on("connection", socketListener);
 app.options(corsMiddleware);
 app.use(corsMiddleware);
 
-app.use(cookieParser() as any);
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(escapeBody);
