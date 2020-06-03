@@ -36,8 +36,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(escapeBody);
 
 // Routes
-app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"));
-app.use("/", mainRouter);
+app.use("/app/api/v1/", mainRouter);
 
 server.listen(port, () => {
   console.log(`Server started at http://localhost:${port}`);
