@@ -57,6 +57,7 @@ ConversationSchema.methods.sendMessage = async function (
         notification: {
           title: `${user.userName}`,
           body: `${message}`,
+          icon: user.profilePicUrl,
         },
         data: {
           click_action: "FLUTTER_NOTIFICATION_CLICK",
