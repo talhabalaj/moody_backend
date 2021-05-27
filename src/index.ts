@@ -1,19 +1,19 @@
+import "./lib/db";
+
+import { origin, port } from "./config";
+
 import Express from "express";
 import bodyParser from "body-parser";
-import cors from "cors";
-import helmet from "helmet";
 import cookieParser from "cookie-parser";
-import socket from "socket.io";
+import cors from "cors";
 import { createServer } from "http";
-import morgan from "morgan";
-
-import { mainRouter } from "./routes/v1";
-import { port, origin } from "./config";
 import { escapeBody } from "./middleware/escapeBody";
-
-import "./lib/db";
-import { socketListener } from "./socket";
+import helmet from "helmet";
+import { mainRouter } from "./routes/v1";
+import morgan from "morgan";
+import socket from "socket.io";
 import { socketAuthHandler } from "./socket/authHandler";
+import { socketListener } from "./socket";
 
 const app = Express();
 const server = createServer(app);

@@ -1,13 +1,13 @@
-import { Response } from "express";
-import jwt from "jsonwebtoken";
-import { compare } from "bcrypt";
+import { secret, sessionTime } from "../../config";
 
 import { AuthToken } from "../../models/AuthToken";
-import { User } from "../../models/User";
-import { secret, sessionTime } from "../../config";
 import { ExpressRequest } from "../../enhancements/ExpressRequest";
+import { Response } from "express";
+import { User } from "../../models/User";
+import { compare } from "bcrypt";
 import { createError } from "../../lib/errors";
 import { createResponse } from "../../lib/response";
+import jwt from "jsonwebtoken";
 
 export const loginUser = async (
   req: ExpressRequest,
@@ -32,7 +32,9 @@ export const loginUser = async (
       await authToken.save();
       res.setHeader(
         "Set-Cookie",
-        `access_token=${token}; HttpOnly; ${req.secure ? "Secure" : ""}`
+        `access_token=${token}; HttpOnly; ${
+          req.secure ? "Secure" : ""
+        }; SameSite=None;`
       );
       return createResponse(res, {
         status: 202,
