@@ -32,9 +32,7 @@ export const loginUser = async (
       await authToken.save();
       res.setHeader(
         "Set-Cookie",
-        `access_token=${token}; HttpOnly; ${
-          req.secure ? "Secure" : ""
-        }; SameSite=None;`
+        `access_token=${token}; HttpOnly;Secure;SameSite=None;`
       );
       return createResponse(res, {
         status: 202,
