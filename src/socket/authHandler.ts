@@ -1,17 +1,20 @@
-import { Socket } from "socket.io";
 import jwt, { JsonWebTokenError } from "jsonwebtoken";
+
 import { AuthToken } from "../models/AuthToken";
-import { secret } from "../config";
-import { User } from "../models/User";
 import { Conversation } from "../models/Conversation";
+import { Socket } from "socket.io";
+import { User } from "../models/User";
+import { secret } from "../config";
 
 export const socketAuthHandler = async (socket: Socket, next: Function) => {
   if (
     socket.handshake.query &&
-    socket.handshake.query.token &&
+    (socket.handshake.query.token || socket.handshake.headers["cookie"]) &&
     socket.handshake.query.conversation
   ) {
-    const token = socket.handshake.query.token;
+    const token =
+      socket.handshake.query.token ||
+      socket.handshake.headers["cookie"].split("=")[1];
     const conversationId = socket.handshake.query.conversation;
     const tokenInfo = await AuthToken.findOne({ token });
     if (tokenInfo?.isValid) {

@@ -1,8 +1,8 @@
-import { User } from "../../models/User";
 import { ExpressRequest } from "../../enhancements/ExpressRequest";
+import { ExpressResponse } from "../../enhancements/ExpressResponse";
+import { User } from "../../models/User";
 import { createError } from "../../lib/errors";
 import { createResponse } from "../../lib/response";
-import { ExpressResponse } from "../../enhancements/ExpressResponse";
 import { verifyEmail } from "../../lib/verify-email";
 
 export const registerUser = async (
@@ -33,7 +33,7 @@ export const registerUser = async (
   }
 
   try {
-    const user = new User({
+    const user = await User.create({
       userName,
       email,
       password,
@@ -41,7 +41,7 @@ export const registerUser = async (
       firstName,
       lastName,
     });
-    await user.save();
+    
     return createResponse(res, {
       status: 201,
       message: "Successfully created user.",

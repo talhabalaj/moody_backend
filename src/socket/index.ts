@@ -1,7 +1,7 @@
-import { Socket } from "socket.io";
 import { IConversation } from "../models/Conversation";
 import { IUser } from "../models/User";
 import { Message } from "../models/Message";
+import { Socket } from "socket.io";
 
 interface SendMessage {
   message: string;
@@ -14,22 +14,28 @@ export function socketListener(socket: Socket) {
 
   const currentRoom = socket.nsp.to(conversation._id);
 
-  socket.on("message", async (msg: SendMessage) => {
-    const message = await conversation.sendMessage(msg.message, user._id);
+  socket.on("message", async (msg: string) => {
+    const messageContent = JSON.parse(msg);
+    const message = await conversation.sendMessage(
+      messageContent.message,
+      user._id
+    );
     currentRoom.emit(
       "message",
-      JSON.stringify({ uniqueId: msg.uniqueId, message })
+      JSON.stringify({ uniqueId: messageContent.uniqueId, message })
     );
   });
 
-  socket.on("message_seen", async (data: { messageIds: [string] }) => {
+  socket.on("message_seen", async (data: string) => {
+    const { messageIds }: { messageIds: string[] } = JSON.parse(data);
+
     const updated = await Message.updateMany(
-      { _id: { $in: data.messageIds } },
+      { _id: { $in: messageIds } },
       { seen: true }
     );
     currentRoom.emit(
       "message_seen",
-      JSON.stringify({ messageIds: data.messageIds, updated })
+      JSON.stringify({ messageIds: messageIds, updated })
     );
   });
 }
