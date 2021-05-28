@@ -19,7 +19,10 @@ const app = Express();
 const server = createServer(app);
 const io = socket(server);
 
-const corsMiddleware: any = cors({ credentials: true, origin });
+const corsMiddleware: any = cors({
+  credentials: true,
+  origin: true,
+});
 
 // Middleware
 app.use(helmet());

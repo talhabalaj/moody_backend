@@ -32,7 +32,7 @@ export const loginUser = async (
       await authToken.save();
       res.setHeader(
         "Set-Cookie",
-        `access_token=${token}; HttpOnly;Secure;SameSite=None;`
+        `access_token=${token};path=/;Secure;SameSite=None;`
       );
       return createResponse(res, {
         status: 202,
